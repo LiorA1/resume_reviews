@@ -1,0 +1,102 @@
+Folder PATH listing
+Volume serial number is 642A-08ED
+C:.
+|   db.sqlite3
+|   Dockerfile
+|   manage.py
+|   output.doc
+|   requirements.txt
+|   
++---accounts
+|   |   admin.py
+|   |   apps.py
+|   |   forms.py
+|   |   models.py
+|   |   signals.py
+|   |   tests.py
+|   |   urls.py
+|   |   views.py
+|   |   __init__.py
+|   |   
+|   +---migrations
+|   |   |   0001_initial.py
+|   |   |   __init__.py
+|   |   |   
+|   |   \---__pycache__
+|   |           0001_initial.cpython-39.pyc
+|   |           __init__.cpython-39.pyc
+|   |           
+|   +---templates
+|   |   |   base.html
+|   |   |   
+|   |   +---accounts
+|   |   |       profile.html
+|   |   |       register.html
+|   |   |       
+|   |   \---registration
+|   |           logged_out.html
+|   |           login.html
+|   |           password_reset_complete.html
+|   |           password_reset_confirm.html
+|   |           password_reset_done.html
+|   |           password_reset_form.html
+|   |           
+|   \---__pycache__
+|           admin.cpython-39.pyc
+|           apps.cpython-39.pyc
+|           forms.cpython-39.pyc
+|           models.cpython-39.pyc
+|           urls.cpython-39.pyc
+|           views.cpython-39.pyc
+|           __init__.cpython-39.pyc
+|           
++---media
+|   \---profile_pics
+|           1571741750092.jpg
+|           
++---resumes
+|   |   admin.py
+|   |   apps.py
+|   |   models.py
+|   |   tests.py
+|   |   urls.py
+|   |   views.py
+|   |   __init__.py
+|   |   
+|   +---migrations
+|   |   |   0001_initial.py
+|   |   |   __init__.py
+|   |   |   
+|   |   \---__pycache__
+|   |           0001_initial.cpython-39.pyc
+|   |           __init__.cpython-39.pyc
+|   |           
+|   +---templates
+|   |   \---resumes
+|   |           home.html
+|   |           
+|   \---__pycache__
+|           admin.cpython-39.pyc
+|           apps.cpython-39.pyc
+|           models.cpython-39.pyc
+|           urls.cpython-39.pyc
+|           views.cpython-39.pyc
+|           __init__.cpython-39.pyc
+|           
++---resume_project
+|   |   asgi.py
+|   |   settings.py
+|   |   urls.py
+|   |   wsgi.py
+|   |   __init__.py
+|   |   
+|   \---__pycache__
+|           settings.cpython-39.pyc
+|           urls.cpython-39.pyc
+|           wsgi.cpython-39.pyc
+|           __init__.cpython-39.pyc
+|           
+\---static
+    \---resume_project
+            main.css
+            

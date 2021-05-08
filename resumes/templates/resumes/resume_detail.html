@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+    <h2>resume_detail</h2>
+    <div class="card m-2 overflow-hidden">
+
+		<div class="card-header">
+			<div class="d-flex bd-highlight align-items-start">
+				<img class="rounded-circle img-thumbnail center card-img-start" src="{{ resume.author.profile.image.url }}" alt=" ">
+					
+				<div class="align-self-start flex-fill">
+                    <div class="align-self-start-inner d-flex">
+					    <span class="me-auto" style="margin-top: auto;">
+						    <a class="card-user-link" href="{% url 'resumes:user_resumes' resume.author.username %}">{{ resume.author }}</a>
+		      			    <!-- Format the date: -->
+		      			    <small class="text-muted">{{ resume.created_at|date:"F d, Y" }}</small>
+		      			    <!-- https://docs.djangoproject.com/en/2.0/ref/templates/builtins/#date -->
+                        </span>
+
+                        <!-- Not protect, just do not display! -->
+                        {% if resume.author == user %}
+	      		        <span class="ms-auto">
+	      			        <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{% url 'resumes:resume_update' resume.id %}">Update Resume</a>
+	      			        <a class="btn btn-danger btn-sm mt-1 mb-1" href="{% url 'resumes:resume_delete' resume.id %}">Delete Resume</a>
+                        </span>
+	      	            {% endif %}
+                    </div>
+		      		
+		      		<h5 class="card-title align-self-end">
+		    			<a class="card-title" href="{% url 'resumes:resume_detail' resume.id %}">{{ resume.filename }}</a>
+		    		</h5>
+		    	</div>
+			</div>
+				
+		</div>
+
+		<div class="card-body">
+            <!-- 16:9 aspect ratio -->
+            <div class="ratio ratio-1x1 p-1" style="margin-left: auto; margin-right: auto; text-align: center; width: 90%; height: 75vh/*950px*/; background-color: rgb(82,86,89); border-bottom: solid;">
+                <iframe class="embed-responsive-item" src="{{resume.resume_file.url}}"></iframe>
+            </div>
+            <!-- https://getbootstrap.com/docs/5.0/helpers/ratio/ -->
+
+            <hr/>
+            <p class="card-text">{{ resume.text }}**</p>
+			
+            {% comment "optional pdf" %}
+            <!--
+            <div id="adobe-dc-view" style="margin-left: auto; margin-right: auto; text-align: center; width: 90%; height: 75vh/*950px*/;"></div>
+            <script src="https://documentcloud.adobe.com/view-sdk/main.js"></script>
+            <script type="text/javascript">
+                /*PDF Embed API */
+                document.addEventListener("adobe_dc_view_sdk.ready", function()
+                {
+                    // bd7e8e14e5dd48dca607602e687a8a3f - django-02-files.s3.amazonaws.com
+                    // a3b351c206d54bf680c0bd662a10e8d0 - localhost
+                    var adobeDCView = new AdobeDC.View({clientId: "a3b351c206d54bf680c0bd662a10e8d0", divId: "adobe-dc-view"});
+                    adobeDCView.previewFile(
+                    {
+                        //content:   {location: {url: "https://documentcloud.adobe.com/view-sdk-demo/PDFs/Bodea Brochure.pdf"}},
+                        content:   {location: {url: "{{resume.resume_file.url}}"}},
+                        metaData: {fileName: "{{ resume.author }} {{ resume.id }} resume "}
+                    });
+
+                    console.log(adobeDCView);
+                    console.log("adobeDCView");
+                });
+                
+                    // My Console:
+                    // https://console.adobe.io/projects/541573/4566206088344631129/credentials/163239/details
+
+                    // https://www.w3schools.com/cssref/css_units.asp
+            </script>
+            -->
+            {% endcomment %}
+		</div>
+	</div>
+
+    <div class="container">
+        {% if resume.review_set %}
+            {% for review in resume.review_set.all %}
+                <div class="card m-2">
+                    <div class="card-header d-flex">
+                        <div class="me-auto">
+                            <a class="card-user-link" href="{% url 'resumes:user_reviews' review.author.username %}">{{ review.author }}</a>
+                            <small class="text-muted">{{ review.created_at|date:"F d, Y" }}</small>
+                        </div>
+                        
+                        {% if review.author == user %}
+	      		            <div class="ms-auto">
+	      			            <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{% url 'resumes:review_update' review.id %}">Edit</a>
+	      			            <a class="btn btn-warning btn-sm mt-1 mb-1" href="{% url 'resumes:review_delete' review.id %}">Delete</a>
+	      		            </div>
+	      	            {% endif %}
+                    </div>
+
+                    <div class="card-body d-flex">
+                        <span class="me-auto">text:{{ review.text }}</span>
+                        <span class="ms-auto"><span class="p-2 border rounded-circle border-info">grade:{{ review.grade }}</span></span>
+                    </div>
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+
+    <div>
+        Review Form
+        <br>
+        {% load crispy_forms_tags %}
+        <form action="{% url 'resumes:review_create' resume.id %}" method="post" class="p-2 m-2">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-10 mb-0">{{ review_form.text|as_crispy_field }}</div>
+                <div class="col-2 mb-0">{{ review_form.grade|as_crispy_field }}</div>
+            </div>
+            <div class="d-grid justify-content-end">
+                <input type="submit" value="Save" class="btn btn-primary">
+            </div>
+            
+        </form>
+
+        { include "./review_form.html" %}
+    </div>
+
+{% endblock content %}

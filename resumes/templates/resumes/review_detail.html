@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+    <h2>review_detail</h2>
+    <div class="card m-2 overflow-hidden">
+
+		<div class="card-header">
+			<div class="d-flex bd-highlight align-items-start">
+				<img class="rounded-circle img-thumbnail center card-img-start" src="{{ review.author.profile.image.url }}" alt=" ">
+					
+				<div class="align-self-start flex-fill">
+					<div class="align-self-start-inner d-flex">
+					<span class="me-auto" style="margin-top: auto;">
+						<a class="card-user-link" href="{% url 'resumes:user_reviews' review.author.username %}">{{ review.author }}</a>
+		      			<!-- Format the date: -->
+		      			<small class="text-muted">{{ review.created_at|date:"F d, Y" }}</small>
+		      			<!-- https://docs.djangoproject.com/en/2.0/ref/templates/builtins/#date -->
+					</span>
+
+
+					
+		      				
+					{% if review.author == user %}
+						<span class="ms-auto">
+							<a class="btn btn-secondary btn-sm mt-1 mb-1" href="{% url 'resumes:review_update' review.id %}">Update</a>
+							<a class="btn btn-warning btn-sm mt-1 mb-1" href="{% url 'resumes:review_delete' review.id %}">Delete</a>
+						</span>
+					{% endif %}
+					</div>
+
+		      		<h5 class="card-title align-self-end">
+		    			<a class="card-title" href="{% url 'resumes:review_detail' review.id %}">{{ review.author }} Review Of '{{ review.resume.filename }}'</a>
+		    		</h5>
+		    	</div>
+			</div>
+				
+		</div>
+
+		<div class="card-body d-flex">
+			<span class="me-auto">text:{{ review.text }}</span>
+			<span class="ms-auto"><span class="p-2 border rounded-circle border-info">grade:{{ review.grade }}</span></span>
+			
+		</div>
+
+        <div class="card-footer">
+            
+            
+        </div>
+
+	</div>
+{% endblock content %}

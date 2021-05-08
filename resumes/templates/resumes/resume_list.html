@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block content %}
+    {% if resume_list %}
+        <div class="cardgroup">
+            {% for resume in resume_list %}
+            <!-- TODO: Consider to use AJAX to request the resume html from another view. -->
+                <div class="card m-2 overflow-hidden">
+                    <div class="card-header">
+                        <div class="d-flex bd-highlight align-items-start">
+                            <img class="rounded-circle img-thumbnail center card-img-start" src="{{ resume.author.profile.image.url }}" alt=" ">
+                                
+                            <div class="align-self-start flex-fill"><!-- card-user-start -->
+                                <div class="align-self-start-inner">
+                                    <a class="card-user-link" href="{% url 'resumes:user_resumes' resume.author.username %}">{{ resume.author }}</a>
+                                      <!-- Format the date: -->
+                                      <small class="text-muted">{{ resume.created_at|date:"F d, Y" }}</small>
+                                      <!-- https://docs.djangoproject.com/en/2.0/ref/templates/builtins/#date -->
+                                </div>
+                                
+                                
+                                <h5 class="card-title align-self-end">
+                                    <a class="card-title" href="{% url 'resumes:resume_detail' resume.id %}">{{ resume.filename }}</a>
+                                </h5>
+                            </div>
+                        </div>
+                            
+                    </div>
+
+                    <div class="card-body">
+                        
+                        <!-- 16:9 aspect ratio -->
+                        <div class="ratio ratio-1x1" style="margin-left: auto; margin-right: auto; text-align: center; width: 90%; height: 75vh/*950px*/;">
+                            <iframe class="embed-responsive-item" src="{{resume.resume_file.url}}" ></iframe>
+                        </div>
+                        <!-- https://getbootstrap.com/docs/5.0/helpers/ratio/ -->
+
+                        <hr/>
+                        <p class="card-text">{{ resume.text }}**</p>
+
+                        {% comment "optional pdf" %}
+                        <!--
+                        <div id="adobe-dc-view-{{ resume.id }}" style="margin-left: auto; margin-right: auto; text-align: center; width: 90%; height: 75vh/*950px*/;"></div>
+                        <script src="https://documentcloud.adobe.com/view-sdk/main.js"></script>
+                        <script type="text/javascript">
+                            /*PDF Embed API */
+                            document.addEventListener("adobe_dc_view_sdk.ready", function()
+                            {
+                                var adobeDCView = new AdobeDC.View({clientId: "a3b351c206d54bf680c0bd662a10e8d0", divId: "adobe-dc-view-{{ resume.id }}"});
+                                adobeDCView.previewFile(
+                                {
+                                    //content:   {location: {url: "https://documentcloud.adobe.com/view-sdk-demo/PDFs/Bodea Brochure.pdf"}},
+                                    content:   {location: {url: "{{resume.resume_file.url}}", headers:[{key: "response-content-disposition", value: "{{resume.resume_file.url}}"}]}},
+                                    metaData: {fileName: "{{ resume.author }} {{ resume.id }} resume "}
+                                });
+                            });
+                            // My Console:
+                            // https://console.adobe.io/projects/541573/4566206088344631129/credentials/163239/details
+
+                            // https://www.w3schools.com/cssref/css_units.asp
+                        </script>
+                        <!---->
+                        <!--<a href="{% url 'resumes:resume_detail' resume.id %}">{{ forloop.counter0 }} {{ resume.id }}</a><!-- Debug -->
+                        {% endcomment %}
+                    </div>
+
+                    <div class="card-footer">
+                        Card Footer
+                    </div>
+
+                </div>
+            {% endfor %}
+
+        </div>
+    {% else %}
+        <strong>No Resumes was found</strong>
+    {% endif %}
+
+{% endblock content %}

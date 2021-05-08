@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+    <h2>resume_confirm_delete</h2>
+    <form method="post">
+        {% csrf_token %}
+        <p>Are you sure you want to delete "{{ resume.filename }}"?</p>
+        <input type="submit" value="Confirm">
+    </form>
+
+{% endblock content %}

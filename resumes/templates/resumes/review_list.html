@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+    <h2>review_list</h2>
+    <div class="container">
+
+        {% if review_list %}
+            <!-- TODO: Fix to something normal -->
+            <ul class="list-group">
+                {% for review in review_list %}
+                    <li>
+                        <a href="{% url 'resumes:review_detail' review.id %}">{{ forloop.counter0 }} {{ review.id }}</a>
+
+                        <!-- Not protect, just do not display! -->
+                        {% if review.author == user %}
+                            <span style="float: right">
+                                (<a href="{% url 'resumes:review_update' review.id %}">Edit</a> | <a href="{% url 'resumes:review_delete' review.id %}">Delete</a>)
+                            </span>
+                        {% endif %}
+
+                        {% if user.is_authenticated %}
+                        {% endif %}
+
+
+                    </li>
+                {% endfor %}
+
+            </ul>
+        {% else %}
+            <strong>No Reviews was found</strong>
+        {% endif %}
+
+    </div>
+
+{% endblock content %}

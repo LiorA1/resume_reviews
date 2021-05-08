@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+    <h2>user resumes</h2>
+    <div class="container">
+        {% if resume_list %}
+            {% for resume in resume_list %}
+            <div class="card m-2">
+                <div class="card-header">
+                    <div class="d-flex bd-highlight align-items-start">
+                        <img class="rounded-circle img-thumbnail center card-img-start" src="{{ resume.author.profile.image.url }}" alt=" ">
+                            
+                        <div class="align-content-start flex-fill">
+                            <div class="align-self-start-inner d-flex">
+                                <span class="me-auto" style="margin-top: auto;">
+                                    <a class="card-user-link" href="{% url 'resumes:user_resumes' resume.author.username %}">{{ resume.author }}</a>
+                                    <!-- Format the date: -->
+                                    <small class="text-muted">{{ resume.created_at|date:"F d, Y" }}</small>
+                                    <!-- https://docs.djangoproject.com/en/2.0/ref/templates/builtins/#date -->
+                                </span>
+                                
+                                <!-- Not protect, just do not display! -->
+                                {% if resume.author == user %}
+                                <span class="ms-auto">
+                                    <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{% url 'resumes:resume_update' resume.id %}">Edit</a>
+                                    <a class="btn btn-danger btn-sm mt-1 mb-1" href="{% url 'resumes:resume_delete' resume.id %}">Delete</a>
+                                </span>
+                                {% endif %}
+                                {% if user.is_authenticated %}
+                                {% endif %}
+                            </div>
+
+                            <h5 class="card-title align-self-end">
+                                <a class="card-title" href="{% url 'resumes:resume_detail' resume.id %}"> Resume Of '{{ resume.author }}'</a>
+                            </h5>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Body -->
+                <div class="card-body">
+                    <!-- 16:9 aspect ratio -->
+                    <div class="ratio ratio-1x1 p-1" style="margin-left: auto; margin-right: auto; text-align: center; width: 90%; height: 75vh/*950px*/; background-color: rgb(82,86,89); border-bottom: solid;">
+                        <iframe class="embed-responsive-item" src="{{resume.resume_file.url}}"></iframe>
+                    </div>
+                    <!-- https://getbootstrap.com/docs/5.0/helpers/ratio/ -->
+                    
+                    <hr/>
+                    <p class="card-text">{{ resume.text }}**</p>
+
+                    {% comment "optional pdf" %}
+                    <!--
+                    <div id="adobe-dc-view-{{ resume.id }}" style="margin-left: auto; margin-right: auto; text-align: center; width: 90%; height: 75vh/*950px*/;"></div>
+                    <script src="https://documentcloud.adobe.com/view-sdk/main.js"></script>
+                    <script type="text/javascript">
+                        /*PDF Embed API */
+                        document.addEventListener("adobe_dc_view_sdk.ready", function()
+                        {
+                            var adobeDCView = new AdobeDC.View({clientId: "a3b351c206d54bf680c0bd662a10e8d0", divId: "adobe-dc-view-{{ resume.id }}"});
+
+                            adobeDCView.previewFile(
+                            {
+                                //content:   {location: {url: "https://documentcloud.adobe.com/view-sdk-demo/PDFs/Bodea Brochure.pdf"}},
+                                content:   {location: {url: "{{resume.resume_file.url}}"}},
+                                metaData: {fileName: "{{ resume.author }} {{ resume.id }} resume "}
+                            });
+                        });
+                        // My Console:
+                        // https://console.adobe.io/projects/541573/4566206088344631129/credentials/163239/details
+
+                        // https://www.w3schools.com/cssref/css_units.asp
+                    </script>
+                    <!--  -->
+                    {% endcomment %}
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <strong>No Resumes was found</strong>
+        {% endif %}
+
+    </div>
+
+    <br>
+    <!-- for debud --
+    <pre>{% filter force_escape %}{% debug %}{% endfilter %}</pre>-->
+
+{% endblock %}
