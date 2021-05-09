@@ -23,7 +23,7 @@ class CustomUserRegisterForm(CustomUserCreationForm):
 
     # Configuration
     class Meta:
-        #model = CustomUser
+        model = CustomUser
         fields = ['username', 'email', 'password1', 'password2']
 
 
