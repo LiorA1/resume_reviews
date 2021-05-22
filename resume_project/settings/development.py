@@ -3,7 +3,7 @@ from .base import *
 DEGUB = True
 
 INSTALLED_APPS += [
-
+    #'el_pagination',
 ]
 
 MIDDLEWARE += [

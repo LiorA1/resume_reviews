@@ -8,7 +8,7 @@ from django.views.generic import ListView
 from accounts.models import CustomUser
 
 from resumes.models import Review, Resume
-from resumes.owner import OwnerListView, OwnerDetailView, OwnerCreateView, OwnerUpdateView, OwnerDeleteView
+from .owner import OwnerListView, OwnerDetailView, OwnerCreateView, OwnerUpdateView, OwnerDeleteView
 
 
 class ReviewListView(OwnerListView):

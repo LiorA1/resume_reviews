@@ -12,7 +12,7 @@
                                 
                             <div class="align-self-start flex-fill"><!-- card-user-start -->
                                 <div class="align-self-start-inner">
-                                    <a class="card-user-link" href="{% url 'resumes:user_resumes' resume.author.username %}">{{ resume.author }}</a>
+                                    <a id="name" class="card-user-link" href="{% url 'resumes:user_resumes' resume.author.username %}">{{ resume.author }}</a>
                                       <!-- Format the date: -->
                                       <small class="text-muted">{{ resume.created_at|date:"F d, Y" }}</small>
                                       <!-- https://docs.djangoproject.com/en/2.0/ref/templates/builtins/#date -->
@@ -30,7 +30,7 @@
                     <div class="card-body">
                         
                         <!-- 16:9 aspect ratio -->
-                        <div class="ratio ratio-1x1" style="margin-left: auto; margin-right: auto; text-align: center; width: 90%; height: 75vh/*950px*/;">
+                        <div class="ratio ratio-1x1" style="margin-left: auto; margin-right: auto; text-align: center; width: 90%; height: 75vh/*950px*/; background-color: rgb(82,86,89); border-bottom: solid;">
                             <iframe class="embed-responsive-item" src="{{resume.resume_file.url}}" ></iframe>
                         </div>
                         <!-- https://getbootstrap.com/docs/5.0/helpers/ratio/ -->
@@ -69,11 +69,70 @@
                     </div>
 
                 </div>
+                <button id='next_button' onclick="loadNext({{resume.id}})">Fetch</button>
             {% endfor %}
 
         </div>
+
+        <br>
+            <ul>
+                {% for k in resume_list %}
+                    <li>{{ k.id }}</li>
+                {% endfor %}
+            </ul>
+
     {% else %}
         <strong>No Resumes was found</strong>
     {% endif %}
+    
 
+    
+
+    <div id="spe"></div>
+
+    <script>
+        // https://stackoverflow.com/a/54404807/3790620
+        // https://stackoverflow.com/a/63630048/3790620
+        console.log("Requesting Resume in json");
+        function loadNext(resume_pk)
+        {
+            // TODO: find a way to calculate different resumes (you need to go back and forth)
+            // https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch
+            fetch("http://localhost:8000/resume/list/"+resume_pk+"/")
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                // https://developer.mozilla.org/en-US/docs/Web/API/Document/querySelector
+                const name_a = document.querySelector('#name');
+                console.log(name_a);
+                console.log(data.author_name);
+                console.log(data.resume_created_at);
+                console.log(data.author_image);
+                console.log(data.resume_filename);
+                console.log(data.resume_resumefile_url);
+                console.log(data.resume_text);
+                //name_a.innerText = data.author_name;
+            });
+
+            // <a id="name" class="card-user-link" 
+            //  href="{ url 'resumes:user_resumes' resume.author.username %}">
+            //  { resume.author }}</a>
+
+            //$('#next_button').on('click',
+            //function(pk){
+            //    $.ajax({
+            //        type: "GET",
+            //        url: '/',
+            //        data: {'pk': pk},
+            //        dataType: 'json',
+            //        success: function(data){
+            //            $('spe').append(data)
+            //        }
+            //    })
+            //})
+
+            //https://stackoverflow.com/q/57240628/3790620
+        }
+
+    </script>
 {% endblock content %}

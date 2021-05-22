@@ -9,7 +9,7 @@ def home(request):
 from resumes.models import Resume
 from resumes.owner import OwnerListView, OwnerDetailView, OwnerCreateView, OwnerUpdateView, OwnerDeleteView
 
-
+"""
 class ResumeListView(OwnerListView):
     model = Resume
     # By convention:
@@ -40,3 +40,4 @@ class ResumeDeleteView(OwnerDeleteView):
     model = Resume
     # By convention:
     # template_name = "myarts/<modelName>_confirm_delete.html"
+"""

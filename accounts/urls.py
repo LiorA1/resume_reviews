@@ -9,6 +9,6 @@ urlpatterns = [
     path('profile/', profile, name = 'profile'),
 ]
 
-from django.conf import settings
 
+from django.conf import settings
 print(settings.AUTH_USER_MODEL)

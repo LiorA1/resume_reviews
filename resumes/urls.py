@@ -13,6 +13,7 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from resumes.views.resume_views import GetResume
 from django.contrib import admin
 from django.urls import path, reverse_lazy
 
@@ -31,6 +32,10 @@ urlpatterns = [
     path('resume/<int:pk>/', views.ResumeDetailView.as_view(), name="resume_detail"),
     path('resume/<int:pk>/update/', views.ResumeUpdateView.as_view(success_url=reverse_lazy(f'{app_name}:home')), name="resume_update"),
     path('resume/<int:pk>/delete/', views.ResumeDeleteView.as_view(success_url=reverse_lazy(f'{app_name}:home')), name="resume_delete"),
+
+    path('resume/list/<int:pk>/', views.GetResume, name="get_resume"),
+
+
 
     # Reviews CRUD (#TODO: Reviews list need to be according user)
     path('review/list', views.ReviewListView.as_view(), name="review_list"),
