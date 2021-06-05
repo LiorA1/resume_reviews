@@ -8,9 +8,9 @@ from django.contrib.auth.forms import UserCreationForm
 
 # The Creation of a Profile is automatic, so need only to make a form for update (and only image for now)
 
-# WE extend the creationform, because of the email
-"""User Register Form"""
 
+"""User Register Form"""
+""" For the CustomUser """
 class CustomUserCreationForm(UserCreationForm):
 
     class Meta:
@@ -18,8 +18,9 @@ class CustomUserCreationForm(UserCreationForm):
         fields = ['username', 'email']
 
 
+# we extend the creationform, because of the email
 class CustomUserRegisterForm(CustomUserCreationForm):
-    email = forms.EmailField()  # Required ?
+    email = forms.EmailField()  # Required 
 
     # Configuration
     class Meta:
@@ -46,9 +47,12 @@ class ProfileUpdateForm(forms.ModelForm):
         model = Profile
         fields = ['image']
 
+
     def clean_image(self):
         # super().clean_image()
         image = self.cleaned_data['image']
+
+        print("ProfileUpdateForm:clean_image")
 
         try:
             w, h = get_image_dimensions(image)
@@ -66,9 +70,11 @@ class ProfileUpdateForm(forms.ModelForm):
                     f'Please use a jpeg, jpg, gif, png images only')
 
             # Validate file size
-            if len(image) > (20 * 1024):
-                raise forms.ValidationError(
-                    f'Image file size may not exceed 20k.')
+            image_size = len(image) # return the bytes size.
+            limit_kbyte = 200
+            limit_size = (limit_kbyte * 1024)
+            if image_size > limit_size:
+                raise forms.ValidationError(f'Your Image is {image_size}. Image file size may not exceed {limit_kbyte}k.')
 
         except AttributeError as e:
             """

@@ -44,6 +44,10 @@ INSTALLED_APPS = [
     'resumes.apps.ResumesConfig',
     'accounts.apps.AccountsConfig',
 
+    'rest_framework',
+    # Mine (rest)
+    'resumes_rest.apps.ResumesRestConfig',
+
 
     # third party apps -
     'crispy_forms', 
@@ -177,8 +181,8 @@ CRISPY_TEMPLATE_PACK = 'bootstrap5'
 CRISPY_ALLOWED_TEMPLATE_PACKS = 'bootstrap5'
 CRISPY_FAIL_SILENTLY = not DEBUG
 
-LOGIN_REDIRECT_URL = '/'
-LOGIN_URL = 'login'
+LOGIN_REDIRECT_URL = '/resumes/'
+LOGIN_URL = '/login/'
 
 
 from django.contrib.messages import constants as messages

@@ -69,17 +69,14 @@
                     </div>
 
                 </div>
+                {% comment "optional button" %}
                 <button id='next_button' onclick="loadNext({{resume.id}})">Fetch</button>
+                {% endcomment %}
             {% endfor %}
 
         </div>
 
         <br>
-            <ul>
-                {% for k in resume_list %}
-                    <li>{{ k.id }}</li>
-                {% endfor %}
-            </ul>
 
     {% else %}
         <strong>No Resumes was found</strong>

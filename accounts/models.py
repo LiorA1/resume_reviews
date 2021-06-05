@@ -7,8 +7,9 @@ from PIL import Image
 
 class CustomUser(AbstractUser):
     # add Additional fields in here
-
+    
     def __str__(self):
+        #! Notice: username is UNIQUE
         return f'{self.username}'
 
 
@@ -21,6 +22,3 @@ class Profile(models.Model):
 
     def __str__(self):
         return f'{ self.user.username } Profile'
-
-
-#TODO: Check how to create a generic user model

@@ -6,12 +6,18 @@ from .forms import CustomUserRegisterForm, CustomUserUpdateForm, ProfileUpdateFo
 
 from django.conf import settings
 
+'''The View for register new users'''
 def register(request):
-    if request != 'POST':
+    
+    #print(request.method)
+    #print(request.POST)
+    
+    if request.method != 'POST':
         form = CustomUserRegisterForm()
+
     else:
         form = CustomUserRegisterForm(request.POST)
-
+        
         if form.is_valid():
             form.save()
             username = form.cleaned_data.get('username')
@@ -24,11 +30,13 @@ def register(request):
     return render(request, 'accounts/register.html', context=context)
 
 
+
 from django.contrib.auth.decorators import login_required
 
 
 @login_required
 def profile(request):
+    '''The View function for editing the user data and profile'''
     if request.method == 'POST':
         u_form = CustomUserUpdateForm(request.POST, instance=request.user)
         p_form = ProfileUpdateForm(request.POST, request.FILES, instance=request.user.profile)
@@ -38,6 +46,7 @@ def profile(request):
             p_form.save()
             messages.success(request, f'Your Account has been updated!')
             return redirect('accounts:profile')
+
     else:
         u_form = CustomUserUpdateForm(instance=request.user)
         p_form = ProfileUpdateForm(instance = request.user.profile)
@@ -54,7 +63,7 @@ def profile(request):
         'p_form': p_form
     }
 
-    print("u_form :", u_form)
-    print("p_form :", p_form)
+    #print("u_form :", u_form)
+    #print("p_form :", p_form)
 
-    return render(request, 'accounts/profile.html', context)
+    return render(request, template_name='accounts/profile.html', context=context)

@@ -10,5 +10,5 @@ urlpatterns = [
 ]
 
 
-from django.conf import settings
-print(settings.AUTH_USER_MODEL)
+#from django.conf import settings
+#print(settings.AUTH_USER_MODEL)

@@ -16,8 +16,6 @@ class ReviewListView(OwnerListView):
     # By convention:
     # template_name = "resumes/<modelName>_list.html"
 
-    #TODO: this will give you all the reviews, you need to get the reviews of a specific Resume
-
 
 class UserReviewListView(ListView):
     model = Review
@@ -42,14 +40,16 @@ class ReviewCreateView(OwnerCreateView):
     # By convention:
     # template_name = "resumes/<modelName>_form.html"
     
-    # https://stackoverflow.com/a/53639341/3790620
-    """"""
+    
     def form_valid(self, form):
-        print("form_valid called from review_views file")
+        print("ReviewCreateView:form_valid")
 
+        # 2 ForeignKey(s) inside a createview
+        # https://stackoverflow.com/a/53639341/3790620
+        # We didnt need it, because of owner views !.
+        # Examples:
         #form.instance.author = self.request.user
         #form.instance.grade = self.request.POST.get('grade', None)
-        #form.instance.text = self.request.POST.get('text', None)
 
         try:
             resume_pk = self.kwargs.get('pk', None)
@@ -62,9 +62,6 @@ class ReviewCreateView(OwnerCreateView):
             print(e, type(e))
             print("==============")
         
-
-        #TODO: consider to add review form in the resume detail page/view
-        #! Done.
 
         return super(ReviewCreateView, self).form_valid(form)
 

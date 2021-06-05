@@ -16,39 +16,43 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
-# #https://docs.djangoproject.com/en/3.1/howto/static-files/#serving-files-uploaded-by-a-user-during-development
+
 from django.conf import settings
 from django.conf.urls.static import static
 
+
+import debug_toolbar
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
 
-    path('accounts/', include('django.contrib.auth.urls')),
-
-    path('', include('resumes.urls')),
     
+    path('accounts/', include('django.contrib.auth.urls')),
+    
+
+    path('resumes/', include('resumes.urls')),
+
+    path('resumes_rest/', include('resumes_rest.urls')),
+
     path('', include('accounts.urls')),
 
+    path('__debug__/', include(debug_toolbar.urls)),
 ]
 
 
 #https://docs.djangoproject.com/en/3.1/howto/static-files/#serving-files-uploaded-by-a-user-during-development
 if settings.DEBUG:
+    
+    print("Debug == True")
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
-    print("Debug == True")
-    print(settings.STATIC_URL)
-    print(settings.STATIC_ROOT)
-    print(settings.MEDIA_URL)
-    print(settings.MEDIA_ROOT)
+    #urlpatterns += path('__debug__/', include(debug_toolbar.urls))
+    
+    
     # Using in this way, it will be more understandable.
     # TODO: read about it more!
     # Only Add this when we in debug mode
-#else:
-    #urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-    #urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 
 

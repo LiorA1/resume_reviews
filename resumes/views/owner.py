@@ -41,9 +41,8 @@ class OwnerCreateView(LoginRequiredMixin, CreateView):
     # https://stackoverflow.com/questions/19051830/a-better-way-of-setting-values-in-createview
     # I think this is better:
     def form_valid(self, form):
-        print('form_valid called (my version) owner file')
+        print('OwnerCreateView:form_valid called')
         
-        #form.instance.owner = self.request.user
         form.instance.author = self.request.user
         
         return super(OwnerCreateView, self).form_valid(form)
@@ -63,13 +62,12 @@ class OwnerUpdateView(LoginRequiredMixin, UpdateView):
     """
 
     def get_queryset(self):
-        print('owner update get_queryset called')
+        print('OwnerUpdateView:get_queryset called')
         """ Limit a User to only modifying their own data. """
         
         qs = super(OwnerUpdateView, self).get_queryset() 
         #qs <- Get the queryset of the model. of the object "pk" was
         
-        #TODO: Fix this / Fixed
         return qs.filter(author = self.request.user)  # 'author' is from the DB model (Article).
 
 
@@ -81,7 +79,7 @@ class OwnerDeleteView(LoginRequiredMixin, DeleteView):
     """
 
     def get_queryset(self):
-        print('owner delete get_queryset called')
+        print('OwnerDeleteView:get_queryset called')
         
         qs = super(OwnerDeleteView, self).get_queryset()
         return qs.filter(author = self.request.user)
