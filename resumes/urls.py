@@ -21,7 +21,7 @@ from . import views
 
 
 from django.views.decorators.cache import cache_page
-#@cache_page(60*15)
+
 
 
 app_name="resumes"

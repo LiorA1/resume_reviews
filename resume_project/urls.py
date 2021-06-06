@@ -21,23 +21,18 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 
-import debug_toolbar
-
 
 urlpatterns = [
     path('admin/', admin.site.urls),
 
-    
     path('accounts/', include('django.contrib.auth.urls')),
     
-
     path('resumes/', include('resumes.urls')),
 
     path('resumes_rest/', include('resumes_rest.urls')),
 
     path('', include('accounts.urls')),
 
-    path('__debug__/', include(debug_toolbar.urls)),
 ]
 
 
@@ -47,7 +42,12 @@ if settings.DEBUG:
     print("Debug == True")
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
-    #urlpatterns += path('__debug__/', include(debug_toolbar.urls))
+    
+
+    if settings.DEBUG_TOOLBAR_ENABLED:
+        import debug_toolbar
+        urlpatterns.insert(0, path('__debug__/', include(debug_toolbar.urls)))
+
     
     
     # Using in this way, it will be more understandable.

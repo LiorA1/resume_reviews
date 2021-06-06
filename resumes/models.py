@@ -5,6 +5,7 @@ import os
 
 # Create your models here.
 
+"""Resume Model"""
 class Resume(models.Model):
 
     resume_file = models.FileField(upload_to='uploads/resumes/')
@@ -23,6 +24,8 @@ class Resume(models.Model):
         return f'{self.resume_file.name} File'
 
 
+
+"""Review Model"""
 class Review(models.Model):
 
     CHOICES = [(i, i) for i in range(11)]
@@ -30,13 +33,9 @@ class Review(models.Model):
 
     text = models.TextField(default="")
 
-    #TODO: 
-    #Read: https://docs.djangoproject.com/en/3.2/ref/models/fields/#datefield
-    #created_at = models.DateTimeField(default=timezone.now)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
-    #TODO: Connect to Resume Model
     resume = models.ForeignKey(Resume, on_delete=models.CASCADE)
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 

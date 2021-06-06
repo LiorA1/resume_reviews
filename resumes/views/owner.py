@@ -25,21 +25,8 @@ class OwnerCreateView(LoginRequiredMixin, CreateView):
     and add the owner to the saved object.
     """
 
-    # Saves the form instance, 
-    #   sets the current object for the view, and redirects to get_success_url().
-    
-    # def form_valid(self, form):
-    #     print('form_valid called')
-    #     object = form.save(commit = False)
-    #     object.owner = self.request.user
-    #     object.save()
-
-    #     return super(OwnerCreateView, self).form_valid(form)
-
-
     # https://stackoverflow.com/questions/21652073/django-how-to-set-a-hidden-field-on-a-generic-create-view
     # https://stackoverflow.com/questions/19051830/a-better-way-of-setting-values-in-createview
-    # I think this is better:
     def form_valid(self, form):
         print('OwnerCreateView:form_valid called')
         
@@ -48,12 +35,7 @@ class OwnerCreateView(LoginRequiredMixin, CreateView):
         return super(OwnerCreateView, self).form_valid(form)
 
 
-# read:
-# https://stackoverflow.com/questions/18172102/object-ownership-validation-in-django-updateview
-# One can check it, like described in:
-# https://stackoverflow.com/questions/28775123/edit-and-replay-xhr-chrome-firefox-etc
-# Or in
-# https://stackoverflow.com/q/4797534/3790620
+
 
 class OwnerUpdateView(LoginRequiredMixin, UpdateView):
     """
@@ -62,8 +44,8 @@ class OwnerUpdateView(LoginRequiredMixin, UpdateView):
     """
 
     def get_queryset(self):
-        print('OwnerUpdateView:get_queryset called')
         """ Limit a User to only modifying their own data. """
+        print('OwnerUpdateView:get_queryset called')
         
         qs = super(OwnerUpdateView, self).get_queryset() 
         #qs <- Get the queryset of the model. of the object "pk" was
@@ -95,3 +77,12 @@ class OwnerDeleteView(LoginRequiredMixin, DeleteView):
 # https://stackoverflow.com/a/15540149
 
 # https://stackoverflow.com/questions/5531258/example-of-django-class-based-deleteview
+
+
+# Mine
+# read:
+# https://stackoverflow.com/questions/18172102/object-ownership-validation-in-django-updateview
+# One can check it, like described in:
+# https://stackoverflow.com/questions/28775123/edit-and-replay-xhr-chrome-firefox-etc
+# Or in
+# https://stackoverflow.com/q/4797534/3790620

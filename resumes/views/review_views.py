@@ -42,14 +42,13 @@ class ReviewCreateView(OwnerCreateView):
     
     
     def form_valid(self, form):
-        print("ReviewCreateView:form_valid")
+        #print("ReviewCreateView:form_valid")
 
-        # 2 ForeignKey(s) inside a createview
-        # https://stackoverflow.com/a/53639341/3790620
-        # We didnt need it, because of owner views !.
+        # Define 2 ForeignKey(s) inside a createview
         # Examples:
-        #form.instance.author = self.request.user
-        #form.instance.grade = self.request.POST.get('grade', None)
+        #  form.instance.author = self.request.user
+        #  form.instance.grade = self.request.POST.get('grade', None)
+        # https://stackoverflow.com/a/53639341/3790620
 
         try:
             resume_pk = self.kwargs.get('pk', None)
@@ -64,9 +63,6 @@ class ReviewCreateView(OwnerCreateView):
         
 
         return super(ReviewCreateView, self).form_valid(form)
-
-
-
 
 
 

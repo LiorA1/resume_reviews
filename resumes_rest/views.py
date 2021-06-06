@@ -4,6 +4,7 @@ from resumes.models import Resume, Review
 from .serializers import ResumeSerializer, ReviewSerializer
 
 # Create your views here.
+from .permissions import IsAuthorOrReadOnly
 
 class ResumeViewSet(viewsets.ModelViewSet):
     """
@@ -12,7 +13,7 @@ class ResumeViewSet(viewsets.ModelViewSet):
 
     queryset = Resume.objects.all()
     serializer_class = ResumeSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsAuthorOrReadOnly]
 
 
 class ReviewViewSet(viewsets.ModelViewSet):
@@ -22,4 +23,4 @@ class ReviewViewSet(viewsets.ModelViewSet):
 
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsAuthorOrReadOnly]
