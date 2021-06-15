@@ -74,6 +74,15 @@
                     <!--  -->
                     {% endcomment %}
                 </div>
+                <div class="card-footer">
+                    {% if resume.tags.all %}
+                        Tags:
+                    {% endif %}
+                    {% for tag in resume.tags.all %}
+                        <span class="badge bg-info rounded-pill text-dark">{{ tag.name }}</span>
+                    {% endfor %}
+    
+                </div>
             </div>
             {% endfor %}
         {% else %}

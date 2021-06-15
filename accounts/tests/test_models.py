@@ -20,7 +20,7 @@ class CustomUserTestCase(TestCase):
 
     def test_user_exists(self):
         user_count = CustomUser.objects.count()
-        print("user_count:", user_count)
+        #print("user_count:", user_count)
 
         self.assertEqual(user_count, 1) #! checking equality
 
@@ -49,7 +49,7 @@ class CustomUserTestCase(TestCase):
     def test_customusers_profile(self):
         num_of_users = CustomUser.objects.count()
         num_of_profiles = Profile.objects.count()
-        print(num_of_users, num_of_profiles)
+        #print(num_of_users, num_of_profiles)
 
         self.assertEqual(num_of_users, num_of_profiles)
 

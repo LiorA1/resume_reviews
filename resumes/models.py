@@ -10,6 +10,7 @@ class Resume(models.Model):
 
     resume_file = models.FileField(upload_to='uploads/resumes/')
     text = models.TextField(default="")
+    tags = models.ManyToManyField('Tag', blank=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -47,3 +48,12 @@ class Review(models.Model):
     
 
 
+"""Tag Model (been added after the initial db design)"""
+class Tag(models.Model):
+    name = models.CharField(max_length=25)
+
+    def __repr__(self):
+        return f'{self.name} (id:{self.pk})'
+
+    def __str__(self):
+        return f'{self.name}'

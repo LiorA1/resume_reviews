@@ -31,7 +31,6 @@ class OwnerCreateView(LoginRequiredMixin, CreateView):
         print('OwnerCreateView:form_valid called')
         
         form.instance.author = self.request.user
-        
         return super(OwnerCreateView, self).form_valid(form)
 
 
@@ -47,10 +46,10 @@ class OwnerUpdateView(LoginRequiredMixin, UpdateView):
         """ Limit a User to only modifying their own data. """
         print('OwnerUpdateView:get_queryset called')
         
-        qs = super(OwnerUpdateView, self).get_queryset() 
+        qs = super(OwnerUpdateView, self).get_queryset()
         #qs <- Get the queryset of the model. of the object "pk" was
         
-        return qs.filter(author = self.request.user)  # 'author' is from the DB model (Article).
+        return qs.filter(author = self.request.user)  # 'author' is from the DB model (Object).
 
 
 

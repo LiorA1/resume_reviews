@@ -15,6 +15,16 @@ class ResumeViewSet(viewsets.ModelViewSet):
     serializer_class = ResumeSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsAuthorOrReadOnly]
 
+    def perform_create(self, serializer):
+        #super(ResumeViewSet, self).perform_create(serializer)
+        print("self.request.user: ", self.request.user)
+        #serializer.author=self.request.user
+        serializer.save(author=self.request.user)
+
+    #def update(self, request, *args, **kwargs):
+
+
+
 
 class ReviewViewSet(viewsets.ModelViewSet):
     """

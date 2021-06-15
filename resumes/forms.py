@@ -10,7 +10,7 @@ class ResumeForm(forms.ModelForm):
 
     class Meta:
         model = Resume
-        fields = ['resume_file', 'text']
+        fields = ['resume_file', 'text', 'tags']
         #author will be tied in the create view
 
 

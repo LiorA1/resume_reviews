@@ -28,7 +28,7 @@ class RegisterViewTest(TestCase):
 
     def test_signup_page_url_and_name(self):
         url = reverse('accounts:register')
-        print(url)
+        #print(url)
         response1 = self.client.get(url)
         self.assertEqual(response1.status_code, 200)
         self.assertTemplateUsed(response1, template_name='accounts/register.html')
@@ -88,14 +88,14 @@ class LoginViewTest(TestCase):
 
     def test_login_url(self):
         #login_url = "/login/"
-        print(f'/accounts{settings.LOGIN_URL}')
+        #print(f'/accounts{settings.LOGIN_URL}')
         self.assertEqual(f'/accounts{settings.LOGIN_URL}', self.url)
 
 
     def test_login_logout(self):
         #login
         response_of_login = self.client.login(**self.data_of_user)
-        print(response_of_login)
+        #print(response_of_login)
         self.assertTrue(response_of_login)
 
         #get to the login page again
@@ -103,7 +103,9 @@ class LoginViewTest(TestCase):
         self.assertEqual(response_of_get.status_code, 200)
 
         # Go to some directory
-        response_of_get = self.client.get(reverse('resumes:home'))
+        url = reverse('resumes:home')
+        #print(url)
+        response_of_get = self.client.get(url)
         self.assertEqual(response_of_get.status_code, 200)
         #?self.assertTemplateUsed(response_of_get, template_name='resumes/home.html')
 
@@ -111,9 +113,10 @@ class LoginViewTest(TestCase):
         client_user = auth.get_user(self.client)
         self.assertEqual(client_user, self.user)
         self.assertTrue(client_user.is_authenticated)
-        print("======")
-        print(response_of_get.context['user'])
-        print("======")
+        #print("======")
+        #print(hasattr(response_of_get.context, 'user'))
+        #print(response_of_get.context['user'])
+        #print("======")
         # In the MDN this is done differently.
         # https://developer.mozilla.org/en-US/docs/Learn/Server-side/Django/Testing
 
