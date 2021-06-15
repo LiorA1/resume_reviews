@@ -13,5 +13,7 @@ STATICFILES_DIRS = [
     #os.path.join(BASE_DIR, "staticfiles"),
 ]
 
+#TODO: Add email backend
+
 
 django_heroku.settings(locals())
