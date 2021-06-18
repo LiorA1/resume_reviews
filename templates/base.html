@@ -62,14 +62,26 @@
 					<!-- Navbar Left Side -->
 					<div class="navbar-nav me-auto">
 						<a class="nav-item nav-link" href="{% url 'resumes:home' %}">Home</a>
-						<a class="nav-item nav-link" href="{ url 'blog_about' %}">About</a>
+						<a class="nav-item nav-link" href="{% url 'resumes:home' %}">Resumes</a>
+						<a class="nav-item nav-link" href="{% url 'blog:blog_home' %}">Blog</a>
+						<a class="nav-item nav-link" href="{% url 'site_about' %}">About</a>
 					</div>
 
 					<!-- Navbar Right Side -->
 					<!-- Checks is a user is logged in or not and changed the left preview accordinglly -->
 					<div class="navbar-nav ms-auto">
 						{% if user.is_authenticated %} <!--Allow us to check if any user is currently logged in-->
-						<a class="nav-item nav-link" href="{ url 'post_create' %}">Create Post</a>
+						<li class="nav-item dropdown">
+							<a href="#" class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+								Create
+							</a>
+							<ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+								<li><a class="dropdown-item" href="{% url 'resumes:resume_create' %}">Create Resume</a></li>
+								<li><hr class="dropdown-divider"></li>
+								<li><a class="dropdown-item" href="{% url 'blog:post_create' %}">Create Post</a></li>
+							</ul>
+						</li>
+						
 						<a class="nav-item nav-link" href="{% url 'accounts:profile' %}">Profile</a>
 						<a class="nav-item nav-link" href="{% url 'logout' %}">Logout</a>
 						{% else %}
