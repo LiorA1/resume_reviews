@@ -16,5 +16,9 @@ class CustomUserAdmin(UserAdmin):
     form = CustomUserUpdateForm
     model = CustomUser
     list_display = ['email', 'username']
+    #list_filter = ['username', 'email']
 
 admin.site.register(CustomUser, CustomUserAdmin)
+
+
+# TODO: read about 'Django Admin interface'

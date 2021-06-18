@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+<!-- Load crispy form -->
+{% load crispy_forms_tags %} 
+{% block content %}
+
+    <div class="content-section">
+        <h2>About Page</h2>
+
+        <p> 
+            This site will have 3 apparent pieces:
+            <ol>
+                <li>The resume part, on which users can upload their resumes for others to review</li>
+                <li>The Blog part, that allow users to create posts and publish it</li>
+                <li>The ORM training part, on which one can practice his ORM knowledge (TODO)</li>
+            </ol>
+
+            There are parts that are not visible, like:
+            <ol>
+                <li>The account app which "shadows" the django.accounts default app</li>
+                <li>The REST API for the resumes app, implemented with DRF</li>
+                <li>The use of Django Caching (memcached), DJDT, Testing, Coverage and docker</li>
+            </ol>
+        </p>
+        
+    </div>
+{% endblock content %}
