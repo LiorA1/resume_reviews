@@ -42,8 +42,12 @@ class ParentOwnerCreateView(OwnerCreateView):
     Sub-class of the OwnerCreateView, that redirect to its own detailview(?)
     """
 
+
 class ChildOwnerCreateView(OwnerCreateView):
-    """"""
+    """
+    Sub-class of OwnerCreateView, that abstract the logic of creating an object 
+    from the parent page/view.
+    """
 
     #find what type is the parent
     parent_model = None
@@ -54,9 +58,8 @@ class ChildOwnerCreateView(OwnerCreateView):
     def form_valid(self, form):
         try:
             self.parent_pk = self.kwargs.get('pk', None)
-            #self.success_url = 
             currentParent = get_object_or_404(self.parent_model, id=self.parent_pk)
-            #form.instance
+            
             # find the field from the type of the parent and popluate it
             setattr(form.instance, self.parent_model.__name__.lower(), currentParent)
         except Exception as e:

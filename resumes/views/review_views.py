@@ -12,12 +12,14 @@ from resumes.models import Review, Resume
 from .owner import OwnerListView, OwnerDetailView, OwnerCreateView, OwnerUpdateView, OwnerDeleteView
 
 
+""" Review List Page/View """
 class ReviewListView(OwnerListView):
     model = Review
     # By convention:
     # template_name = "resumes/<modelName>_list.html"
 
 
+""" Review User List Page/View """
 class UserReviewListView(ListView):
     model = Review
     template_name = 'resumes/user_reviews.html'
@@ -29,12 +31,14 @@ class UserReviewListView(ListView):
         return Review.objects.filter(author=user).order_by('-id')
 
 
+""" Review Detail Page/View """
 class ReviewDetailView(OwnerDetailView):
     model = Review
     # By convention:
     # template_name = "resumes/<modelName>_detail.html"
 
 
+""" Review Create Page/View """
 class ReviewCreateView(OwnerCreateView):
     model = Review
     fields = ['grade', 'text']
@@ -51,6 +55,7 @@ class ReviewCreateView(OwnerCreateView):
         #  form.instance.grade = self.request.POST.get('grade', None)
         # https://stackoverflow.com/a/53639341/3790620
 
+        # Need to assign the parent object (ForeignKey) in the form
         try:
             resume_pk = self.kwargs.get('pk', None)
             self.success_url=reverse_lazy(f'resumes:resume_detail', args=[resume_pk])
@@ -67,6 +72,7 @@ class ReviewCreateView(OwnerCreateView):
 
 
 
+""" Review Update Page/View """
 class ReviewUpdateView(OwnerUpdateView):
     model = Review
     fields = ['grade', 'text']
@@ -81,6 +87,7 @@ class ReviewUpdateView(OwnerUpdateView):
         return reverse('resumes:resume_detail', args=[self.object.resume_id])
 
 
+""" Review Delete Page/View """
 class ReviewDeleteView(OwnerDeleteView):
     model = Review
     # By convention:

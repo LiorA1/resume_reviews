@@ -67,8 +67,8 @@ class UserResumeListView(ListView):
 
 
 
+""" Resume Detail Page/View with ReviewForm"""
 class ResumeDetailView(OwnerDetailView):
-    """ Resume Detail Page/View with ReviewForm"""
     model = Resume
     # By convention:
     # template_name = "resumes/<modelName>_detail.html"
@@ -88,6 +88,7 @@ class ResumeDetailView(OwnerDetailView):
         return context
 
 
+""" Resume Create Page/View """
 class ResumeCreateView(OwnerCreateView):
     model = Resume
     #fields = ['resume_file', 'text']
@@ -97,6 +98,7 @@ class ResumeCreateView(OwnerCreateView):
     #success_url = reverse_lazy(f'{app_name}:all')
 
 
+""" Resume Update Page/View """
 class ResumeUpdateView(OwnerUpdateView):
     model = Resume
     fields = ['resume_file', 'text', 'tags']
@@ -109,6 +111,7 @@ class ResumeUpdateView(OwnerUpdateView):
         return reverse('resumes:resume_detail', args=[self.kwargs.get('pk')])
 
 
+""" Resume Delete Page/View """
 class ResumeDeleteView(OwnerDeleteView):
     model = Resume
     # By convention:

@@ -12,11 +12,13 @@ def blog_home(request):
     return render(request, 'blog/blog_home.html')
 
 
+""" Post List Page/View """
 class PostListView(owner.OwnerListView):
     model = Post
     ordering = ['-updated_at']
 
 
+""" Post Detail Page/View """
 class PostDetailView(owner.OwnerDetailView):
     model = Post
 
@@ -35,12 +37,13 @@ class PostDetailView(owner.OwnerDetailView):
         return context
 
 
-
+""" Post Create Page/View """
 class PostCreateView(owner.OwnerCreateView):
     model = Post
     form_class = PostForm
 
 
+""" Post Update Page/View (with TestMixin)"""
 class PostUpdateView(owner.OwnerUpdateView, UserPassesTestMixin):
     model = Post
     form_class = PostForm
@@ -60,18 +63,21 @@ class PostUpdateView(owner.OwnerUpdateView, UserPassesTestMixin):
 
 
 
+""" Post Delete Page/View """
 class PostDeleteView(owner.OwnerDeleteView):
     model = Post
 
 
 
+
 ### Comment Views
 
+""" Comment Create Page/View """
 class CommentCreateView(owner.ChildOwnerCreateView):
     model = Comment
     form_class = CommentForm
     #success_url=reverse_lazy(f'blog:blog_home')
-    
+
     parent_model = Post
     parent_reverse_prefix = 'blog:post_detail'
 
@@ -100,13 +106,13 @@ class CommentCreateView(owner.ChildOwnerCreateView):
 
         
 
-
+""" Comment Detail Page/View """
 class CommentDetailView(owner.OwnerDetailView):
     model = Comment
 
     
 
-
+""" Comment Update Page/View """
 class CommentUpdateView(owner.OwnerUpdateView):
     model = Comment
     fields = ['text']
@@ -118,6 +124,7 @@ class CommentUpdateView(owner.OwnerUpdateView):
         return reverse('blog:post_detail', args=[self.object.post_id])
 
 
+""" Comment Delete Page/View """
 class CommentDeleteView(owner.OwnerDeleteView):
     model = Comment
 
