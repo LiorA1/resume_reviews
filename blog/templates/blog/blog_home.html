@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+<!-- Load crispy form -->
+{% load crispy_forms_tags %} 
+{% block content %}
+
+    <div class="content-section">
+        <h2>Hi</h2>
+
+        <ol>
+            
+            <li><a href="{% url 'blog:post_list' %}">Post list</a></li>
+            <li><a href="{% url 'blog:post_create' %}">Post create</a></li>
+            <li><a href="{% url 'blog:post_detail' 1 %}">Post detail</a></li>
+            <li><a href="{% url 'blog:post_update' 1 %}">Post update</a></li>
+            <li><a href="{% url 'blog:post_delete' 1 %}">Post delete</a></li>
+        </ol>
+
+
+        <ol>
+            
+            <li><a href="{% url 'resumes:review_list' %}">Review list</a></li>
+            <li><a href="{% url 'resumes:review_create' 1 %}">Review create</a></li>
+            <li><a href="{% url 'resumes:review_detail' 1 %}">Review detail</a></li>
+            <li><a href="{% url 'resumes:review_update' 1 %}">Review update</a></li>
+            <li><a href="{% url 'resumes:review_delete' 1 %}">Review delete</a></li>
+        </ol>
+        
+    </div>
+{% endblock content %}

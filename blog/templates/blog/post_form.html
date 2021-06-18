@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+    <h2>post_form</h2>
+
+    <!-- fixed with the help of: -->
+    <!-- https://stackoverflow.com/a/32429092/3790620 -->
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form|crispy }}
+        <input type="submit" value="Save">
+    </form>
+
+{% endblock content %}
