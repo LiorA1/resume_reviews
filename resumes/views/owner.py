@@ -1,3 +1,5 @@
+from django.shortcuts import get_object_or_404
+from django.urls.base import reverse
 from django.views.generic import CreateView, UpdateView, DeleteView, ListView, DetailView, View
 
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -31,8 +33,48 @@ class OwnerCreateView(LoginRequiredMixin, CreateView):
         print('OwnerCreateView:form_valid called')
         
         form.instance.author = self.request.user
+        
         return super(OwnerCreateView, self).form_valid(form)
 
+
+class ParentOwnerCreateView(OwnerCreateView):
+    """
+    Sub-class of the OwnerCreateView, that redirect to its own detailview(?)
+    """
+
+class ChildOwnerCreateView(OwnerCreateView):
+    """"""
+
+    #find what type is the parent
+    parent_model = None
+    parent_reverse_prefix = None
+    parent_pk = None
+
+    #override the form_valid method
+    def form_valid(self, form):
+        try:
+            self.parent_pk = self.kwargs.get('pk', None)
+            #self.success_url = 
+            currentParent = get_object_or_404(self.parent_model, id=self.parent_pk)
+            #form.instance
+            # find the field from the type of the parent and popluate it
+            setattr(form.instance, self.parent_model.__name__.lower(), currentParent)
+        except Exception as e:
+            print("==============")
+            print(e, type(e))
+            print("==============")
+
+        return super(ChildOwnerCreateView, self).form_valid(form)
+    
+
+    def get_success_url(self):
+        try:
+            url = reverse(self.parent_reverse_prefix, args=[self.parent_pk])
+        except:
+            print("self.parent_pk or parent_reverse_prefix are not defined")
+            url = super(ChildOwnerCreateView, self).get_success_url()
+        finally:
+            return url
 
 
 

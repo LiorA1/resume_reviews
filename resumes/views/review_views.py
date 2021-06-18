@@ -4,6 +4,7 @@ from django.http import HttpResponse
 
 
 from django.urls import reverse_lazy
+from django.urls.base import reverse
 from django.views.generic import ListView
 from accounts.models import CustomUser
 
@@ -72,8 +73,18 @@ class ReviewUpdateView(OwnerUpdateView):
     # By convention:
     # template_name = "resumes/<modelName>_form.html"
 
+    def get_success_url(self):
+        #print("CommentUpdateView:get_success_url")
+        #print("pk is:", self.kwargs.get('pk'))
+        #print("kwargs is:", self.kwargs)
+        #print("parent pk is:", self.object.resume_id)
+        return reverse('resumes:resume_detail', args=[self.object.resume_id])
+
 
 class ReviewDeleteView(OwnerDeleteView):
     model = Review
     # By convention:
     # template_name = "resumes/<modelName>_confirm_delete.html"
+
+    def get_success_url(self):
+        return reverse('resumes:resume_detail', args=[self.object.resume_id])

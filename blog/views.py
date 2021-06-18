@@ -71,6 +71,7 @@ class CommentCreateView(owner.ChildOwnerCreateView):
     model = Comment
     form_class = CommentForm
     #success_url=reverse_lazy(f'blog:blog_home')
+    
     parent_model = Post
     parent_reverse_prefix = 'blog:post_detail'
 

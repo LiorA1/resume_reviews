@@ -1,6 +1,7 @@
 from django.http.response import JsonResponse
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse
+from django.urls.base import reverse
 # Create your views here.
 
 
@@ -82,7 +83,7 @@ class ResumeDetailView(OwnerDetailView):
         # Get all the reviews belongs to the Resume
         reviews = Review.objects.filter(resume=resumeQuery).order_by('-updated_at')
         review_form = ReviewForm()
-        context = { 'resume': resumeQuery, 'reviews': reviews, 'review_form': review_form}
+        context = {'resume': resumeQuery, 'reviews': reviews, 'review_form': review_form}
 
         return context
 
@@ -101,6 +102,11 @@ class ResumeUpdateView(OwnerUpdateView):
     fields = ['resume_file', 'text', 'tags']
     # By convention:
     # template_name = "resumes/<modelName>_form.html"
+
+    def get_success_url(self):
+        print("ResumeUpdateView:get_success_url")
+        print("pk is:", self.kwargs.get('pk'))
+        return reverse('resumes:resume_detail', args=[self.kwargs.get('pk')])
 
 
 class ResumeDeleteView(OwnerDeleteView):
