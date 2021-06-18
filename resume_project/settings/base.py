@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     # My Apps
     'resumes.apps.ResumesConfig',
     'accounts.apps.AccountsConfig',
+    'blog.apps.BlogConfig',
 
     'rest_framework',
     # Mine (rest)
