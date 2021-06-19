@@ -33,10 +33,10 @@ urlpatterns = [
     #path('list/', (views.ResumeListView.as_view()), name="resume_list"),
     path('list/', cache_page(60*15)(views.ResumeListView.as_view()), name="resume_list"),
     path('user/<str:username>/', views.UserResumeListView.as_view(), name="user_resumes"),
-    path('resume/create/', views.ResumeCreateView.as_view(success_url=reverse_lazy(f'{app_name}:home')), name="resume_create"),
+    path('resume/create/', views.ResumeCreateView.as_view(success_url=reverse_lazy(f'{app_name}:resume_list')), name="resume_create"),
     path('resume/<int:pk>/', views.ResumeDetailView.as_view(), name="resume_detail"),
     path('resume/<int:pk>/update/', views.ResumeUpdateView.as_view(), name="resume_update"),
-    path('resume/<int:pk>/delete/', views.ResumeDeleteView.as_view(success_url=reverse_lazy(f'{app_name}:home')), name="resume_delete"),
+    path('resume/<int:pk>/delete/', views.ResumeDeleteView.as_view(success_url=reverse_lazy(f'{app_name}:resume_list')), name="resume_delete"),
 
     #!path('resume/list/<int:pk>/', views.GetResume, name="get_resume"),
 
@@ -45,9 +45,8 @@ urlpatterns = [
     # Reviews CRUD
     path('review/list/', views.ReviewListView.as_view(), name="review_list"),
     path('user/reviews/<str:username>/', views.UserReviewListView.as_view(), name="user_reviews"),
-    #path('review/create/', views.ReviewCreateView.as_view(success_url=reverse_lazy(f'{app_name}:home')), name="review_create"),
     path('resume/<int:pk>/create_review/', views.ReviewCreateView.as_view(), name="review_create"),
     path('review/<int:pk>/', views.ReviewDetailView.as_view(), name="review_detail"),
     path('review/<int:pk>/update/', views.ReviewUpdateView.as_view(), name="review_update"),
-    path('review/<int:pk>/delete/', views.ReviewDeleteView.as_view(success_url=reverse_lazy(f'{app_name}:home')), name="review_delete"),
+    path('review/<int:pk>/delete/', views.ReviewDeleteView.as_view(success_url=reverse_lazy(f'{app_name}:resume_list')), name="review_delete"),
 ]
