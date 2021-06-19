@@ -24,7 +24,8 @@ def register(request):
             messages.success(request, f'Account created for {username} Successfuly')
 
             #return redirect(settings.LOGIN_REDIRECT_URL)
-            return redirect('login')
+            #return redirect('login')
+            return redirect('accounts:profile')
     
     context = {'form': form}
     return render(request, 'accounts/register.html', context=context)
