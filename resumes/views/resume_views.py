@@ -53,7 +53,7 @@ class UserResumeListView(ListView):
         user_resumes_key = str(user.username + "_resumes")
         resumes_queryset = cache.get(user_resumes_key)
         if resumes_queryset is None:
-            print("***insert to cache***")
+            #print("***insert to cache***")
             resumes_queryset = Resume.objects.filter(author=user).order_by('-id').prefetch_related('tags', 'author', 'author__profile')
             cache.set(user_resumes_key, resumes_queryset, timeout=300)
             #TODO: Caching is not apper in the djdt for some reason
@@ -95,7 +95,7 @@ class ResumeCreateView(OwnerCreateView):
     form_class = ResumeForm
     # By convention:
     # template_name = "resumes/<modelName>_form.html"
-    #success_url = reverse_lazy(f'{app_name}:all')
+    # success_url = reverse_lazy(f'{app_name}:all')
 
 
 """ Resume Update Page/View """
@@ -106,8 +106,8 @@ class ResumeUpdateView(OwnerUpdateView):
     # template_name = "resumes/<modelName>_form.html"
 
     def get_success_url(self):
-        print("ResumeUpdateView:get_success_url")
-        print("pk is:", self.kwargs.get('pk'))
+        #print("ResumeUpdateView:get_success_url")
+        #print("pk is:", self.kwargs.get('pk'))
         return reverse('resumes:resume_detail', args=[self.kwargs.get('pk')])
 
 

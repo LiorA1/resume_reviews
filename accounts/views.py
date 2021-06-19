@@ -51,8 +51,8 @@ def profile(request):
         u_form = CustomUserUpdateForm(instance=request.user)
         p_form = ProfileUpdateForm(instance = request.user.profile)
 
-    print("u_form errors:", u_form.errors)
-    print("p_form errors:", p_form.errors)
+    #print("u_form errors:", u_form.errors)
+    #print("p_form errors:", p_form.errors)
     if u_form.errors:
         messages.error(request, u_form.errors)
     if p_form.errors:

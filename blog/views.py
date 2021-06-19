@@ -57,8 +57,8 @@ class PostUpdateView(owner.OwnerUpdateView, UserPassesTestMixin):
         #return super().test_func()
 
     def get_success_url(self):
-        print("PostUpdateView:get_success_url")
-        print("pk is:", self.kwargs.get('pk'))
+        #print("PostUpdateView:get_success_url")
+        #print("pk is:", self.kwargs.get('pk'))
         return reverse('blog:post_detail', args=[self.kwargs.get('pk')])
 
 

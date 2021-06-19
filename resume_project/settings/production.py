@@ -15,5 +15,7 @@ STATICFILES_DIRS = [
 
 #TODO: Add email backend
 
+#TODO: Add cache
+
 
 django_heroku.settings(locals())

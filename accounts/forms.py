@@ -52,7 +52,7 @@ class ProfileUpdateForm(forms.ModelForm):
         # super().clean_image()
         image = self.cleaned_data['image']
 
-        print("ProfileUpdateForm:clean_image")
+        #print("ProfileUpdateForm:clean_image")
 
         try:
             w, h = get_image_dimensions(image)

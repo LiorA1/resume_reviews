@@ -17,10 +17,6 @@ class OwnerDetailView(DetailView):
     """
 
 
-# template names in:
-# https://docs.djangoproject.com/en/3.1/topics/auth/default/#module-django.contrib.auth.views
-
-
 class OwnerCreateView(LoginRequiredMixin, CreateView):
     """
     Sub-class of the CreateView to automatically pass the Request to the Form
@@ -30,7 +26,7 @@ class OwnerCreateView(LoginRequiredMixin, CreateView):
     # https://stackoverflow.com/questions/21652073/django-how-to-set-a-hidden-field-on-a-generic-create-view
     # https://stackoverflow.com/questions/19051830/a-better-way-of-setting-values-in-createview
     def form_valid(self, form):
-        print('OwnerCreateView:form_valid called')
+        #print('OwnerCreateView:form_valid called')
         
         form.instance.author = self.request.user
         
@@ -49,12 +45,12 @@ class ChildOwnerCreateView(OwnerCreateView):
     from the parent page/view.
     """
 
-    #find what type is the parent
+    # new class attributes, for parent association.
     parent_model = None
     parent_reverse_prefix = None
     parent_pk = None
 
-    #override the form_valid method
+    # override the 'form_valid' method
     def form_valid(self, form):
         try:
             self.parent_pk = self.kwargs.get('pk', None)
@@ -63,13 +59,12 @@ class ChildOwnerCreateView(OwnerCreateView):
             # find the field from the type of the parent and popluate it
             setattr(form.instance, self.parent_model.__name__.lower(), currentParent)
         except Exception as e:
-            print("==============")
-            print(e, type(e))
-            print("==============")
+            print("ChildOwnerCreateView:form_valid:Exception:\n", e, type(e))
 
         return super(ChildOwnerCreateView, self).form_valid(form)
     
 
+    # override the 'get_success_url' method
     def get_success_url(self):
         try:
             url = reverse(self.parent_reverse_prefix, args=[self.parent_pk])
@@ -89,7 +84,7 @@ class OwnerUpdateView(LoginRequiredMixin, UpdateView):
 
     def get_queryset(self):
         """ Limit a User to only modifying their own data. """
-        print('OwnerUpdateView:get_queryset called')
+        #print('OwnerUpdateView:get_queryset called')
         
         qs = super(OwnerUpdateView, self).get_queryset()
         #qs <- Get the queryset of the model. of the object "pk" was
@@ -105,7 +100,7 @@ class OwnerDeleteView(LoginRequiredMixin, DeleteView):
     """
 
     def get_queryset(self):
-        print('OwnerDeleteView:get_queryset called')
+        #print('OwnerDeleteView:get_queryset called')
         
         qs = super(OwnerDeleteView, self).get_queryset()
         return qs.filter(author = self.request.user)
@@ -121,6 +116,10 @@ class OwnerDeleteView(LoginRequiredMixin, DeleteView):
 # https://stackoverflow.com/a/15540149
 
 # https://stackoverflow.com/questions/5531258/example-of-django-class-based-deleteview
+
+
+# template names in:
+# https://docs.djangoproject.com/en/3.1/topics/auth/default/#module-django.contrib.auth.views
 
 
 # Mine

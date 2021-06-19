@@ -33,9 +33,9 @@ urlpatterns = [
 
     path('blog/', include('blog.urls')),
 
-    path('', include('accounts.urls')),
-
     path('about/', TemplateView.as_view(template_name="about.html"), name="site_about"),
+
+    path('', include('accounts.urls')),
 
 ]
 
@@ -49,6 +49,7 @@ if settings.DEBUG:
     
 
     if settings.DEBUG_TOOLBAR_ENABLED:
+        print("DEBUG_TOOLBAR_ENABLED == True")
         import debug_toolbar
         urlpatterns.insert(0, path('__debug__/', include(debug_toolbar.urls)))
 

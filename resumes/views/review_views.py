@@ -63,9 +63,7 @@ class ReviewCreateView(OwnerCreateView):
             # Calls get() on a given model manager, but it raises Http404 instead of the model’s DoesNotExist exception.
             form.instance.resume = currentResume
         except Exception as e:
-            print("==============")
-            print(e, type(e))
-            print("==============")
+            print("ReviewCreateView:form_valid:Exception:\n", e, type(e))
         
 
         return super(ReviewCreateView, self).form_valid(form)
