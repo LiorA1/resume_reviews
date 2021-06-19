@@ -52,7 +52,7 @@
 		<nav class="navbar navbar-dark navbar-expand-lg bg-steel fixed-top">
 			<div class="container-fluid">
 				<!-- Branding -->
-				<a class="navbar-brand mr-4" href="{% url 'resumes:home' %}">Django Site</a>
+				<a class="navbar-brand mr-4" href="{ % url 'resumes:home' %}">Django Spot</a>
 
 				<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarToggle" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
 					<span class="navbar-toggler-icon"></span>
@@ -61,9 +61,9 @@
 				<div class="collapse navbar-collapse" id="navbarToggle">
 					<!-- Navbar Left Side -->
 					<div class="navbar-nav me-auto">
-						<a class="nav-item nav-link" href="{% url 'resumes:home' %}">Home</a>
-						<a class="nav-item nav-link" href="{% url 'resumes:home' %}">Resumes</a>
-						<a class="nav-item nav-link" href="{% url 'blog:blog_home' %}">Blog</a>
+						<a class="nav-item nav-link" href="#">Home</a>
+						<a class="nav-item nav-link" href="{% url 'resumes:resume_list' %}">Resumes</a>
+						<a class="nav-item nav-link" href="{% url 'blog:post_list' %}">Blog</a>
 						<a class="nav-item nav-link" href="{% url 'site_about' %}">About</a>
 					</div>
 
