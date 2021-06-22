@@ -1,12 +1,11 @@
 from django.http.response import JsonResponse
 from django.shortcuts import render, get_object_or_404
-from django.http import HttpResponse
 from django.urls.base import reverse
 # Create your views here.
 
 
 from resumes.models import Resume, Review
-from .owner import OwnerListView, OwnerDetailView, OwnerCreateView, OwnerUpdateView, OwnerDeleteView
+from .owner import OwnerListView, OwnerDetailView, OwnerCreateView, OwnerUpdateView, OwnerDeleteView, ParentOwnerDetailView
 from django.views.generic import ListView
 
 from ..forms import ResumeForm, ReviewForm
@@ -28,8 +27,7 @@ class ResumeListView(OwnerListView):
     model = Resume
     ordering = ['-created_at']
     #paginate_by = 1
-    # By convention:
-    # template_name = "resumes/<modelName>_list.html"
+    #template_name = "resumes/<modelName>_list.html"
     queryset = Resume.objects.prefetch_related('tags', 'author', 'author__profile')
 
 
@@ -56,7 +54,7 @@ class UserResumeListView(ListView):
             #print("***insert to cache***")
             resumes_queryset = Resume.objects.filter(author=user).order_by('-id').prefetch_related('tags', 'author', 'author__profile')
             cache.set(user_resumes_key, resumes_queryset, timeout=300)
-            #TODO: Caching is not apper in the djdt for some reason
+            #TODO: Caching is not appear in the djdt for some reason
 
         #finish_time = time.perf_counter()
         #print("UserResumeListView:get_queryset - After")
@@ -68,24 +66,22 @@ class UserResumeListView(ListView):
 
 
 """ Resume Detail Page/View with ReviewForm"""
-class ResumeDetailView(OwnerDetailView):
+class ResumeDetailView(ParentOwnerDetailView):
     model = Resume
-    # By convention:
+    child_model = Review
+    child_form = ReviewForm
     # template_name = "resumes/<modelName>_detail.html"
 
-    def get_context_data(self, **kwargs):
-        context = super(ResumeDetailView, self).get_context_data(**kwargs)
-
-        # Getting the Specific Resume 
-        pk = self.kwargs['pk']
-        resumeQuery = get_object_or_404(Resume, id=pk)
-
-        # Get all the reviews belongs to the Resume
-        reviews = Review.objects.filter(resume=resumeQuery).order_by('-updated_at')
-        review_form = ReviewForm()
-        context = {'resume': resumeQuery, 'reviews': reviews, 'review_form': review_form}
-
-        return context
+    #def get_context_data(self, **kwargs):
+    #    context = super(ResumeDetailView, self).get_context_data(**kwargs)
+    #    # Getting the Specific Resume 
+    #    pk = self.kwargs['pk']
+    #    resumeQuery = get_object_or_404(Resume, id=pk)
+    #    # Get all the reviews belongs to the Resume
+    #    reviews = Review.objects.filter(resume=resumeQuery).order_by('-updated_at')
+    #    review_form = ReviewForm()
+    #    context = {'resume': resumeQuery, 'reviews': reviews, 'review_form': review_form}
+    #    return context
 
 
 """ Resume Create Page/View """
@@ -93,21 +89,17 @@ class ResumeCreateView(OwnerCreateView):
     model = Resume
     #fields = ['resume_file', 'text']
     form_class = ResumeForm
-    # By convention:
     # template_name = "resumes/<modelName>_form.html"
-    # success_url = reverse_lazy(f'{app_name}:all')
 
 
 """ Resume Update Page/View """
 class ResumeUpdateView(OwnerUpdateView):
     model = Resume
     fields = ['resume_file', 'text', 'tags']
-    # By convention:
     # template_name = "resumes/<modelName>_form.html"
 
     def get_success_url(self):
-        #print("ResumeUpdateView:get_success_url")
-        #print("pk is:", self.kwargs.get('pk'))
+        #print("ResumeUpdateView:get_success_url", f'pk is: {self.kwargs.get("pk")}')
         return reverse('resumes:resume_detail', args=[self.kwargs.get('pk')])
 
 

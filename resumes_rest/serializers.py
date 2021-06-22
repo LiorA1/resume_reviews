@@ -12,7 +12,17 @@ class ResumeSerializer(serializers.ModelSerializer):
         fields = ['id', 'resume_file', 'text', 'tags']#, 'author']
 
 
+class ResumeTextSerializer(serializers.ModelSerializer):
+    #id = serializers.ReadOnlyField()
+
+    class Meta:
+        model = Resume
+        fields = ['id', 'resume_file', 'text', 'tags']#, 'author']
+        extra_kwargs = {'id': {'required': False}, 'resume_file': {'required': False}}
+
+
 class ReviewSerializer(serializers.ModelSerializer):
     class Meta:
         model = Review
         fields = ['grade', 'text', 'resume', 'author']
+

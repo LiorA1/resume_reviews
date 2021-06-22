@@ -17,7 +17,7 @@ class Profile(models.Model):
     # https://docs.djangoproject.com/en/3.2/topics/auth/customizing/#referencing-the-user-model
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
-    image = models.ImageField(default='profile_pics/default.jpeg', upload_to="profile_pics")
+    image = models.ImageField(default='profile_pics/default.jpg', upload_to="profile_pics")
     
 
     def __str__(self):

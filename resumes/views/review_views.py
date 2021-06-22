@@ -1,9 +1,8 @@
-from django.shortcuts import render, get_object_or_404
-from django.http import HttpResponse
+from django.shortcuts import get_object_or_404
 # Create your views here.
 
 
-from django.urls import reverse_lazy
+from django.urls import reverse
 from django.urls.base import reverse
 from django.views.generic import ListView
 from accounts.models import CustomUser
@@ -42,7 +41,6 @@ class ReviewDetailView(OwnerDetailView):
 class ReviewCreateView(OwnerCreateView):
     model = Review
     fields = ['grade', 'text']
-    # By convention:
     # template_name = "resumes/<modelName>_form.html"
     
     
@@ -58,7 +56,7 @@ class ReviewCreateView(OwnerCreateView):
         # Need to assign the parent object (ForeignKey) in the form
         try:
             resume_pk = self.kwargs.get('pk', None)
-            self.success_url=reverse_lazy(f'resumes:resume_detail', args=[resume_pk])
+            self.success_url=reverse(f'resumes:resume_detail', args=[resume_pk])
             currentResume = get_object_or_404(Resume, id=resume_pk)
             # Calls get() on a given model manager, but it raises Http404 instead of the model’s DoesNotExist exception.
             form.instance.resume = currentResume
@@ -74,13 +72,10 @@ class ReviewCreateView(OwnerCreateView):
 class ReviewUpdateView(OwnerUpdateView):
     model = Review
     fields = ['grade', 'text']
-    # By convention:
-    # template_name = "resumes/<modelName>_form.html"
+    #template_name = "resumes/<modelName>_form.html"
 
     def get_success_url(self):
-        #print("CommentUpdateView:get_success_url")
-        #print("pk is:", self.kwargs.get('pk'))
-        #print("kwargs is:", self.kwargs)
+        #print("CommentUpdateView:get_success_url", f"pk is: {self.kwargs.get('pk')}")
         #print("parent pk is:", self.object.resume_id)
         return reverse('resumes:resume_detail', args=[self.object.resume_id])
 
@@ -89,7 +84,7 @@ class ReviewUpdateView(OwnerUpdateView):
 class ReviewDeleteView(OwnerDeleteView):
     model = Review
     # By convention:
-    # template_name = "resumes/<modelName>_confirm_delete.html"
+    #template_name = "resumes/<modelName>_confirm_delete.html"
 
     def get_success_url(self):
         return reverse('resumes:resume_detail', args=[self.object.resume_id])

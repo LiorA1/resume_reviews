@@ -23,9 +23,8 @@ def register(request):
             username = form.cleaned_data.get('username')
             messages.success(request, f'Account created for {username} Successfuly')
 
-            #return redirect(settings.LOGIN_REDIRECT_URL)
-            #return redirect('login')
-            return redirect('accounts:profile')
+            return redirect(settings.LOGIN_REDIRECT_URL)
+            
     
     context = {'form': form}
     return render(request, 'accounts/register.html', context=context)
@@ -38,6 +37,10 @@ from django.contrib.auth.decorators import login_required
 @login_required
 def profile(request):
     '''The View function for editing the user data and profile'''
+    #print(f'request: {request}')
+    #print(f'request.GET: {request.GET}')
+    #print(f'request.POST: {request.POST}')
+    #print(f'request.FILES: {request.FILES}')
     if request.method == 'POST':
         u_form = CustomUserUpdateForm(request.POST, instance=request.user)
         p_form = ProfileUpdateForm(request.POST, request.FILES, instance=request.user.profile)
@@ -51,13 +54,13 @@ def profile(request):
     else:
         u_form = CustomUserUpdateForm(instance=request.user)
         p_form = ProfileUpdateForm(instance = request.user.profile)
-
-    #print("u_form errors:", u_form.errors)
-    #print("p_form errors:", p_form.errors)
+    
     if u_form.errors:
         messages.error(request, u_form.errors)
+        #print("profile: u_form errors: ", u_form.errors)
     if p_form.errors:
         messages.error(request, p_form.errors)
+        #print("profile: p_form errors: ", p_form.errors)
 
     context = {
         'u_form': u_form,

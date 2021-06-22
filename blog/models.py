@@ -1,4 +1,5 @@
 from django.db import models
+from django.urls.base import reverse
 from django.utils import timezone
 from django.conf import settings
 # Create your models here.
@@ -16,6 +17,9 @@ class Post(models.Model):
 
     def __str__(self):
         return f'{self.title}'
+
+    def get_absolute_url(self):
+        return reverse('blog:post_detail', kwargs = {'pk': self.pk})
 
 
 

@@ -1,3 +1,4 @@
+from django.db.models.query_utils import Q
 from django.shortcuts import get_object_or_404
 from django.urls.base import reverse
 from django.views.generic import CreateView, UpdateView, DeleteView, ListView, DetailView, View
@@ -15,6 +16,39 @@ class OwnerDetailView(DetailView):
     """
     Sub-class the DetailView to pass the request to the form.
     """
+
+class ParentOwnerDetailView(OwnerDetailView):
+    """
+    """
+    child_model = None
+    child_form = None
+
+    def get_context_data(self, **kwargs):
+        context = super(ParentOwnerDetailView, self).get_context_data(**kwargs)
+
+        # Getting the specific Parent Item
+        pk = self.kwargs['pk']
+        ParentQuery = get_object_or_404(self.model, id=pk)
+
+        # Get all the existing Childs of the Parent
+        qQuery = Q(**{f'{self.model._meta.verbose_name}': ParentQuery})
+        childs = self.child_model.objects.filter(qQuery).order_by("-updated_at")
+
+        # define context names
+        parent_model_name = f'{self.model.__name__.lower()}'
+        childs_plural_name = f'{self.child_model._meta.verbose_name_plural}'
+        child_form_verbose_name = f'{self.child_model._meta.verbose_name}_form'
+        # init the child form
+        child_form_empty_init = self.child_form()
+
+        context = {
+            f'{parent_model_name}': ParentQuery, 
+            f'{childs_plural_name}': childs, 
+            f'{child_form_verbose_name}': child_form_empty_init}
+
+
+        return context
+
 
 
 class OwnerCreateView(LoginRequiredMixin, CreateView):
@@ -37,6 +71,7 @@ class ParentOwnerCreateView(OwnerCreateView):
     """
     Sub-class of the OwnerCreateView, that redirect to its own detailview(?)
     """
+    pass
 
 
 class ChildOwnerCreateView(OwnerCreateView):
@@ -87,9 +122,11 @@ class OwnerUpdateView(LoginRequiredMixin, UpdateView):
         #print('OwnerUpdateView:get_queryset called')
         
         qs = super(OwnerUpdateView, self).get_queryset()
-        #qs <- Get the queryset of the model. of the object "pk" was
+        #qs <- Get the queryset of the model. 
+        # QuerySet of all objects from the model, but it is filtered in 'get_object', using 'pk'.
+        # The QuerySet is executed in 'get_object', using 'get' method (for one object only)
         
-        return qs.filter(author = self.request.user)  # 'author' is from the DB model (Object).
+        return qs.filter(author = self.request.user)  # filter on 'author'.
 
 
 

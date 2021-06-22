@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from rest_framework import viewsets, permissions
 from resumes.models import Resume, Review
-from .serializers import ResumeSerializer, ReviewSerializer
+from .serializers import ResumeSerializer, ResumeTextSerializer, ReviewSerializer
 
 # Create your views here.
 from .permissions import IsAuthorOrReadOnly
@@ -17,11 +17,15 @@ class ResumeViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         #super(ResumeViewSet, self).perform_create(serializer)
-        print("self.request.user: ", self.request.user)
+        #print(f"self.request.user: {self.request.user}")
         #serializer.author=self.request.user
         serializer.save(author=self.request.user)
 
-    #def update(self, request, *args, **kwargs):
+    # Partial Update action Enabled
+    def get_serializer_class(self):
+        if self.action == 'update':
+            return ResumeTextSerializer
+        return ResumeSerializer
 
 
 

@@ -1,4 +1,5 @@
 from django.db import models
+from django.urls.base import reverse
 from django.utils import timezone
 from django.conf import settings
 import os
@@ -23,6 +24,9 @@ class Resume(models.Model):
 
     def __str__(self):
         return f'{self.resume_file.name} File'
+
+    def get_absolute_url(self):
+        return reverse('resumes:resume_detail', kwargs = {'pk': self.pk})
 
 
 
