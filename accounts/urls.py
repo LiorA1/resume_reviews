@@ -8,7 +8,3 @@ urlpatterns = [
     path('register/', register, name = 'register'),
     path('profile/', profile, name = 'profile'),
 ]
-
-
-#from django.conf import settings
-#print(settings.AUTH_USER_MODEL)

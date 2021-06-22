@@ -48,8 +48,7 @@ class ReviewCreateView(OwnerCreateView):
         #print("ReviewCreateView:form_valid")
 
         # Define 2 ForeignKey(s) inside a createview
-        # Examples:
-        #  form.instance.author = self.request.user
+        # Example:
         #  form.instance.grade = self.request.POST.get('grade', None)
         # https://stackoverflow.com/a/53639341/3790620
 

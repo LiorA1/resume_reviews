@@ -2,17 +2,13 @@ from django import forms
 from django.core.files.images import get_image_dimensions
 from .models import Profile
 
-#from django.contrib.auth.models import User
 from .models import CustomUser
 from django.contrib.auth.forms import UserCreationForm
 
-# The Creation of a Profile is automatic, so need only to make a form for update (and only image for now)
 
 
-"""User Register Form"""
-""" For the CustomUser """
 class CustomUserCreationForm(UserCreationForm):
-
+    """CustomUser Creation Form"""
     class Meta:
         model = CustomUser
         fields = ['username', 'email']
@@ -20,6 +16,7 @@ class CustomUserCreationForm(UserCreationForm):
 
 # we extend the creationform, because of the email
 class CustomUserRegisterForm(CustomUserCreationForm):
+    """CustomUser Register Form"""
     email = forms.EmailField()  # Required 
 
     # Configuration
@@ -29,8 +26,8 @@ class CustomUserRegisterForm(CustomUserCreationForm):
 
 
 
-'''Create a UserUpdateForm to update username and email'''
 class CustomUserUpdateForm(forms.ModelForm):
+    '''CustomUserUpdateForm to update username and email'''
     email = forms.EmailField()
 
     class Meta:
@@ -51,7 +48,6 @@ class ProfileUpdateForm(forms.ModelForm):
     def clean_image(self):
         # super().clean_image()
         image = self.cleaned_data['image']
-
         #print("ProfileUpdateForm:clean_image")
 
         try:

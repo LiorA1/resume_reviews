@@ -1,7 +1,7 @@
 from django.db.models.query_utils import Q
 from django.shortcuts import get_object_or_404
 from django.urls.base import reverse
-from django.views.generic import CreateView, UpdateView, DeleteView, ListView, DetailView, View
+from django.views.generic import CreateView, UpdateView, DeleteView, ListView, DetailView
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 
@@ -61,7 +61,6 @@ class OwnerCreateView(LoginRequiredMixin, CreateView):
     # https://stackoverflow.com/questions/19051830/a-better-way-of-setting-values-in-createview
     def form_valid(self, form):
         #print('OwnerCreateView:form_valid called')
-        
         form.instance.author = self.request.user
         
         return super(OwnerCreateView, self).form_valid(form)

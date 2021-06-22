@@ -11,10 +11,6 @@ from django.urls import reverse
 class BlogViewsTest(TestCase):
     @classmethod
     def setUpTestData(cls) -> None:
-        
-        FOLDER_NAME = 'data'
-        #TEST_DIR = os.path.dirname(os.path.abspath(__file__))
-        #cls.TEST_DATA_DIR = os.path.join(TEST_DIR, FOLDER_NAME)
 
         return super().setUpTestData()
 

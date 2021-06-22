@@ -24,6 +24,7 @@ class PostDetailView(owner.ParentOwnerDetailView):
     child_model = Comment
     child_form = CommentForm
 
+    # The ParentOwnerDetailView do all of this in an OOP manner:
     #def get_context_data(self, **kwargs):
     #    context = super(PostDetailView, self).get_context_data(**kwargs)
     #    # Getting the specific Post Item
@@ -80,6 +81,7 @@ class CommentCreateView(owner.ChildOwnerCreateView):
     parent_model = Post
     parent_reverse_prefix = 'blog:post_detail'
 
+    # The ChildOwnercreate do all of this in an OOP manner:
     # We got an error ('IntegrityError at /blog/post/2/create_comment/')
     # i.e: django cant find the post on which the user want to comment on..
     #def form_valid(self, form):

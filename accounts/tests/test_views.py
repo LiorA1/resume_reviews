@@ -1,4 +1,4 @@
-from django.contrib.messages.api import get_messages
+
 from accounts.models import CustomUser
 from django.core.handlers.wsgi import WSGIRequest
 from accounts.views import profile
@@ -73,10 +73,8 @@ class RegisterViewTest(AccountsViewsTests):
             follow=True)
 
         self.assertEqual(response_of_post.context['form'].errors['username'], ['A user with that username already exists.'])
-
         self.assertEqual(response_of_post.status_code, 200)
-        # the following used when the user exists allready
-        self.assertTemplateUsed(response_of_post, template_name='accounts/register.html')
+        self.assertTemplateUsed(response_of_post, template_name='accounts/register.html') #used when the user exists allready
 
 
     '''tests the register process'''
@@ -108,8 +106,7 @@ class RegisterViewTest(AccountsViewsTests):
         # checks that the user is indeed inside the DB.
         self.assertEqual(response_of_post.status_code, 200)
         self.assertEqual(self.data_of_user_b_registration['username'], str(user))
-        #used when the user is new
-        self.assertTemplateUsed(response_of_post, template_name='registration/login.html')
+        self.assertTemplateUsed(response_of_post, template_name='registration/login.html') #used when the user is new
 
         #! AWS Cleanup 
         #CustomUser.objects.get(username=self.user.username).delete()

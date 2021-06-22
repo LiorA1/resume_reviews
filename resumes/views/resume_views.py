@@ -72,6 +72,7 @@ class ResumeDetailView(ParentOwnerDetailView):
     child_form = ReviewForm
     # template_name = "resumes/<modelName>_detail.html"
 
+    # The ParentOwnerDetailView do all of this in an OOP manner:
     #def get_context_data(self, **kwargs):
     #    context = super(ResumeDetailView, self).get_context_data(**kwargs)
     #    # Getting the Specific Resume 
@@ -119,7 +120,7 @@ class ResumeDeleteView(OwnerDeleteView):
 
 
 
-#TODO:
+#TODO Section:
 """Create a view that will load Via AJAX resumes objects"""
 from django.views import View
 from django.views.generic.base import TemplateView

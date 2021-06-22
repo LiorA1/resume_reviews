@@ -1,11 +1,6 @@
-from django.core.exceptions import ValidationError
-from accounts.forms import ProfileUpdateForm
 from django.test import TestCase
 from ..models import CustomUser, Profile
 # Create your tests here.
-
-from django.conf import settings
-# TDD
 
 class CustomUserTestCase(TestCase):
     
@@ -22,7 +17,7 @@ class CustomUserTestCase(TestCase):
         user_count = CustomUser.objects.count()
         #print("user_count:", user_count)
 
-        self.assertEqual(user_count, 1) #! checking equality
+        self.assertEqual(user_count, 1)
 
     
     def test_customuser_str(self):
@@ -31,15 +26,6 @@ class CustomUserTestCase(TestCase):
 
     def test_profile_str(self):
         self.assertEqual(str(self.user_a.profile), f'{ self.user_a.username } Profile')
-
-
-    from ..forms import ProfileUpdateForm
-    def test_forms_profileupdateform(self):
-        #form_u_profile = ProfileUpdateForm()
-        #form_u_profile.is_valid()
-        #self.assertRaises(ValidationError, form_u_profile.clean) # clean
-        pass
-
 
 
     def test_user_password(self):

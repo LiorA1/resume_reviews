@@ -16,6 +16,7 @@ def create_profile(sender, instance, created, **kwargs):
 #def save_profile(sender, instance, **kwargs):
 #    instance.profile.save()
 
+
 @receiver(post_delete, sender=Profile)
 def post_delete_profile_clean_image(sender, instance, **kwargs):
     cond = instance.image.name != instance.image.field.default

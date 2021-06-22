@@ -21,4 +21,4 @@ class CustomUserAdmin(UserAdmin):
 admin.site.register(CustomUser, CustomUserAdmin)
 
 
-# TODO: read about 'Django Admin interface'
+# TODO: 'Django Admin interface'

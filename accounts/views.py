@@ -37,10 +37,7 @@ from django.contrib.auth.decorators import login_required
 @login_required
 def profile(request):
     '''The View function for editing the user data and profile'''
-    #print(f'request: {request}')
-    #print(f'request.GET: {request.GET}')
-    #print(f'request.POST: {request.POST}')
-    #print(f'request.FILES: {request.FILES}')
+    
     if request.method == 'POST':
         u_form = CustomUserUpdateForm(request.POST, instance=request.user)
         p_form = ProfileUpdateForm(request.POST, request.FILES, instance=request.user.profile)
