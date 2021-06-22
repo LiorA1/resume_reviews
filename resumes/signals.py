@@ -6,16 +6,14 @@ from .models import Resume
 
 @receiver(post_delete, sender=Resume)
 def resume_post_delete_handler(sender, **kwargs):
-    """signal which invalidate the cache['users_resumes'], when a resume is deleted."""
+    """signal which invalidate the cache, when a resume is deleted."""
     cache.clear()
-    #print("resume_post_delete_handler 1")
 
 
 @receiver(post_save, sender=Resume)
 def resume_post_save_handler(sender, **kwargs):
-    """signal which invalidate the cache['users_resumes'], when a new resume is added."""
+    """signal which invalidate the cache, when a new resume is added."""
     cache.clear()
-    #print("resume_post_save_handler")
 
 
 @receiver(post_delete, sender=Resume)

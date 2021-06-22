@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import User, AbstractUser
+from django.contrib.auth.models import AbstractUser
 from django.conf import settings
 # Create your models here.
 
@@ -9,8 +9,7 @@ class CustomUser(AbstractUser):
     # add Additional fields in here
     
     def __str__(self):
-        #! Notice: username is UNIQUE
-        return f'{self.username}'
+        return self.username
 
 
 class Profile(models.Model):
