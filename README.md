@@ -2,10 +2,11 @@
 A personal project of a resume reviews site
 
 ### Caching using memcached-
-Caching using memcached was used in two ways: per-view and low level.
+Caching using memcached was used in two ways: per-view and low level.  
 Per View Caching in:
-1. resumes.views.ResumeListView (in the urls module)
-Low Level was used in:
+1. resumes.views.ResumeListView (in the urls module)  
+
+Low Level was used in:  
 1. resumes.views.resume_views.UserResumeListView
 
 
@@ -28,3 +29,9 @@ CustomUser is shown in the Admin interface and have registration/login/password 
 ### Testing
 Each App contains its own tests, using django.test.client and RequestFactory.
 There are tests with files uploading.
+
+### Docker
+Docker was used as local development (docker-compose) environment.
+
+### AWS
+AWS S3, was used for the users images and resumes files storage.
