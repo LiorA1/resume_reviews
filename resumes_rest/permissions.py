@@ -19,5 +19,4 @@ class IsAuthorOrReadOnly(permissions.BasePermission):
         # Write permissions are only allowed to the owner of the object.
         print("permissions/IsAuthorOrReadOnly/has_object_permissions/Equalize")
 
-        #TODO : Check this !!
         return hasattr(obj, 'author') and obj.author == request.user

@@ -4,6 +4,7 @@ from django.dispatch import receiver
 from django.core.cache import cache
 from .models import Resume
 
+
 @receiver(post_delete, sender=Resume)
 def resume_post_delete_handler(sender, **kwargs):
     """signal which invalidate the cache, when a resume is deleted."""
@@ -22,9 +23,8 @@ def resume_post_delete_handler(sender, instance, **kwargs):
         instance.resume_file.delete(save=False)
 
 
-
-#! Notice:
-#TODO: Try to solve it.
+# ! Notice:
+# TODO: Try to solve it.
 # Options:
 # 1. Create multiple caches
 # 2. find a way to find and delete specific enteries in the cache.

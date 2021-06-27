@@ -5,7 +5,7 @@ from django.urls.base import reverse
 
 
 from resumes.models import Resume, Review
-from .owner import OwnerListView, OwnerDetailView, OwnerCreateView, OwnerUpdateView, OwnerDeleteView, ParentOwnerDetailView
+from .owner import OwnerListView, OwnerCreateView, OwnerUpdateView, OwnerDeleteView, ParentOwnerDetailView
 from django.views.generic import ListView
 
 from ..forms import ResumeForm, ReviewForm
@@ -13,36 +13,32 @@ from ..forms import ResumeForm, ReviewForm
 from accounts.models import CustomUser
 
 
+import time
+from django.core.cache import cache
 
 
-import time 
 def home(request):
     time.sleep(5)
     return render(request, 'resumes/home.html')
 
 
-
-"""Display all the resumes"""
 class ResumeListView(OwnerListView):
+    """Display all the resumes"""
     model = Resume
     ordering = ['-created_at']
-    #paginate_by = 1
-    #template_name = "resumes/<modelName>_list.html"
+    # paginate_by = 1
+    # template_name = "resumes/<modelName>_list.html"
     queryset = Resume.objects.prefetch_related('tags', 'author', 'author__profile')
 
 
-
-
-from django.core.cache import cache
-
-"""ListView of Resumes specific by the User"""
 class UserResumeListView(ListView):
+    """ListView of Resumes specific by the User"""
     model = Resume
     template_name = 'resumes/user_resumes.html'
-    #context_object_name = 'resumes'
+    # context_object_name = 'resumes'
 
     def get_queryset(self):
-        #start_time = time.perf_counter()
+        # start_time = time.perf_counter()
 
         # get the user instance (needed for lookup)
         user = get_object_or_404(CustomUser, username=self.kwargs.get('username'))
@@ -51,61 +47,60 @@ class UserResumeListView(ListView):
         user_resumes_key = str(user.username + "_resumes")
         resumes_queryset = cache.get(user_resumes_key)
         if resumes_queryset is None:
-            #print("***insert to cache***")
+            # print("***insert to cache***")
             resumes_queryset = Resume.objects.filter(author=user).order_by('-id').prefetch_related('tags', 'author', 'author__profile')
             cache.set(user_resumes_key, resumes_queryset, timeout=300)
-            #TODO: Caching is not appear in the djdt for some reason
+            # TODO: Caching is not appear in the djdt for some reason
 
-        #finish_time = time.perf_counter()
-        #print("UserResumeListView:get_queryset - After")
-        #print(f'Finished in {finish_time-start_time} seconds')
-        # The improvement is near to 50%.
-        
+        # finish_time = time.perf_counter()
+        # print("UserResumeListView:get_queryset - After")
+        # print(f'Finished in {finish_time-start_time} seconds')
+        #  The improvement is near to 50%.
+
         return resumes_queryset
 
 
-
-""" Resume Detail Page/View with ReviewForm"""
 class ResumeDetailView(ParentOwnerDetailView):
+    """ Resume Detail Page/View with ReviewForm"""
     model = Resume
     child_model = Review
     child_form = ReviewForm
     # template_name = "resumes/<modelName>_detail.html"
 
     # The ParentOwnerDetailView do all of this in an OOP manner:
-    #def get_context_data(self, **kwargs):
-    #    context = super(ResumeDetailView, self).get_context_data(**kwargs)
-    #    # Getting the Specific Resume 
-    #    pk = self.kwargs['pk']
-    #    resumeQuery = get_object_or_404(Resume, id=pk)
-    #    # Get all the reviews belongs to the Resume
-    #    reviews = Review.objects.filter(resume=resumeQuery).order_by('-updated_at')
-    #    review_form = ReviewForm()
-    #    context = {'resume': resumeQuery, 'reviews': reviews, 'review_form': review_form}
-    #    return context
+    # def get_context_data(self, **kwargs):
+    #     context = super(ResumeDetailView, self).get_context_data(**kwargs)
+    #     # Getting the Specific Resume
+    #     pk = self.kwargs['pk']
+    #     resumeQuery = get_object_or_404(Resume, id=pk)
+    #     # Get all the reviews belongs to the Resume
+    #     reviews = Review.objects.filter(resume=resumeQuery).order_by('-updated_at')
+    #     review_form = ReviewForm()
+    #     context = {'resume': resumeQuery, 'reviews': reviews, 'review_form': review_form}
+    #     return context
 
 
-""" Resume Create Page/View """
 class ResumeCreateView(OwnerCreateView):
+    """ Resume Create Page/View """
     model = Resume
-    #fields = ['resume_file', 'text']
+    # fields = ['resume_file', 'text']
     form_class = ResumeForm
     # template_name = "resumes/<modelName>_form.html"
 
 
-""" Resume Update Page/View """
 class ResumeUpdateView(OwnerUpdateView):
+    """ Resume Update Page/View """
     model = Resume
     fields = ['resume_file', 'text', 'tags']
     # template_name = "resumes/<modelName>_form.html"
 
     def get_success_url(self):
-        #print("ResumeUpdateView:get_success_url", f'pk is: {self.kwargs.get("pk")}')
+        # print("ResumeUpdateView:get_success_url", f'pk is: {self.kwargs.get("pk")}')
         return reverse('resumes:resume_detail', args=[self.kwargs.get('pk')])
 
 
-""" Resume Delete Page/View """
 class ResumeDeleteView(OwnerDeleteView):
+    """ Resume Delete Page/View """
     model = Resume
     # By convention:
     # template_name = "resumes/<modelName>_confirm_delete.html"

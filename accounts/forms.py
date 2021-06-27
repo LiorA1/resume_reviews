@@ -5,6 +5,7 @@ from .models import Profile
 from .models import CustomUser
 from django.contrib.auth.forms import UserCreationForm
 
+from django.core.files.images import get_image_dimensions
 
 
 class CustomUserCreationForm(UserCreationForm):
@@ -17,13 +18,12 @@ class CustomUserCreationForm(UserCreationForm):
 # we extend the creationform, because of the email
 class CustomUserRegisterForm(CustomUserCreationForm):
     """CustomUser Register Form"""
-    email = forms.EmailField()  # Required 
+    email = forms.EmailField()
 
     # Configuration
     class Meta:
         model = CustomUser
         fields = ['username', 'email', 'password1', 'password2']
-
 
 
 class CustomUserUpdateForm(forms.ModelForm):
@@ -35,8 +35,6 @@ class CustomUserUpdateForm(forms.ModelForm):
         fields = ['username', 'email']
 
 
-from django.core.files.images import get_image_dimensions
-
 class ProfileUpdateForm(forms.ModelForm):
     """Create a ProfileUpdateForm to update image"""
 
@@ -44,11 +42,10 @@ class ProfileUpdateForm(forms.ModelForm):
         model = Profile
         fields = ['image']
 
-
     def clean_image(self):
         # super().clean_image()
         image = self.cleaned_data['image']
-        #print("ProfileUpdateForm:clean_image")
+        # print("ProfileUpdateForm:clean_image")
 
         try:
             w, h = get_image_dimensions(image)
@@ -66,7 +63,7 @@ class ProfileUpdateForm(forms.ModelForm):
                     f'Please use a jpeg, jpg, gif, png images only')
 
             # Validate file size
-            image_size = len(image) # return the bytes size.
+            image_size = len(image)  # return the bytes size.
             limit_kbyte = 200
             limit_size = (limit_kbyte * 1024)
             if image_size > limit_size:
@@ -74,9 +71,10 @@ class ProfileUpdateForm(forms.ModelForm):
 
         except AttributeError as e:
             """
-            Handles case when we are updating the user profile and dont supply an image
+            Handles case:
+            when we are updating the user profile and dont supply an image
             """
-            #self.add_error("image", e)
+            # self.add_error("image", e)
             pass
 
         return image

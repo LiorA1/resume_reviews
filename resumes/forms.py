@@ -6,6 +6,7 @@
 from django import forms
 from resumes.models import Resume, Review
 
+
 class ResumeForm(forms.ModelForm):
 
     class Meta:

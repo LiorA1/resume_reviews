@@ -12,14 +12,14 @@ def blog_home(request):
     return render(request, 'blog/blog_home.html')
 
 
-""" Post List Page/View """
 class PostListView(owner.OwnerListView):
+    """ Post List Page/View """
     model = Post
     ordering = ['-updated_at']
 
 
-""" Post Detail Page/View """
 class PostDetailView(owner.ParentOwnerDetailView):
+    """ Post Detail Page/View """
     model = Post
     child_model = Comment
     child_form = CommentForm
@@ -39,17 +39,16 @@ class PostDetailView(owner.ParentOwnerDetailView):
     #    return context
 
 
-""" Post Create Page/View """
 class PostCreateView(owner.OwnerCreateView):
+    """ Post Create Page/View """
     model = Post
     form_class = PostForm
 
 
-""" Post Update Page/View (with TestMixin)"""
 class PostUpdateView(owner.OwnerUpdateView, UserPassesTestMixin):
+    """ Post Update Page/View (with TestMixin)"""
     model = Post
     form_class = PostForm
-
 
     def test_func(self) -> bool:
         post_author = self.get_object().author
@@ -58,23 +57,21 @@ class PostUpdateView(owner.OwnerUpdateView, UserPassesTestMixin):
         return False
 
     def get_success_url(self):
-        #print("PostUpdateView:get_success_url")
-        #print("pk is:", self.kwargs.get('pk'))
+        # print("PostUpdateView:get_success_url")
+        # print("pk is:", self.kwargs.get('pk'))
         return reverse('blog:post_detail', args=[self.kwargs.get('pk')])
 
 
-
-""" Post Delete Page/View """
 class PostDeleteView(owner.OwnerDeleteView):
+    """ Post Delete Page/View """
     model = Post
 
 
+# ## Comment Views
 
 
-### Comment Views
-
-""" Comment Create Page/View """
 class CommentCreateView(owner.ChildOwnerCreateView):
+    """ Comment Create Page/View """
     model = Comment
     form_class = CommentForm
 
@@ -84,7 +81,7 @@ class CommentCreateView(owner.ChildOwnerCreateView):
     # The ChildOwnercreate do all of this in an OOP manner:
     # We got an error ('IntegrityError at /blog/post/2/create_comment/')
     # i.e: django cant find the post on which the user want to comment on..
-    #def form_valid(self, form):
+    # def form_valid(self, form):
     #    try:
     #        post_pk = self.kwargs.get('pk', None)
     #        self.success_url=reverse_lazy(f'blog:post_detail', args=[post_pk])
@@ -96,7 +93,7 @@ class CommentCreateView(owner.ChildOwnerCreateView):
     #        print("==============")
     #    return super(CommentCreateView, self).form_valid(form)
 
-    #def get_success_url(self):
+    # def get_success_url(self):
     #    try:
     #        url = reverse('blog:post_detail', args=[self.parent_pk])
     #    except:
@@ -105,27 +102,25 @@ class CommentCreateView(owner.ChildOwnerCreateView):
     #    finally:
     #        return url
 
-        
 
-""" Comment Detail Page/View """
 class CommentDetailView(owner.OwnerDetailView):
+    """ Comment Detail Page/View """
     model = Comment
 
-    
 
-""" Comment Update Page/View """
 class CommentUpdateView(owner.OwnerUpdateView):
+    """ Comment Update Page/View """
     model = Comment
     fields = ['text']
 
     def get_success_url(self):
-        #print("CommentUpdateView:get_success_url", f'pk is: {self.kwargs.get('pk')}')
-        #print("parent pk is:", self.__dict__)
+        # print("CommentUpdateView:get_success_url", f'pk is: {self.kwargs.get('pk')}')
+        # print("parent pk is:", self.__dict__)
         return reverse('blog:post_detail', args=[self.object.post_id])
 
 
-""" Comment Delete Page/View """
 class CommentDeleteView(owner.OwnerDeleteView):
+    """ Comment Delete Page/View """
     model = Comment
 
     def get_success_url(self):

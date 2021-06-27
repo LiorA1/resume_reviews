@@ -6,8 +6,9 @@ import os
 
 # Create your models here.
 
-"""Resume Model"""
+
 class Resume(models.Model):
+    """Resume Model"""
 
     resume_file = models.FileField(upload_to='uploads/resumes/')
     text = models.TextField(default="")
@@ -26,12 +27,11 @@ class Resume(models.Model):
         return f'{self.resume_file.name} File'
 
     def get_absolute_url(self):
-        return reverse('resumes:resume_detail', kwargs = {'pk': self.pk})
+        return reverse('resumes:resume_detail', kwargs={'pk': self.pk})
 
 
-
-"""Review Model"""
 class Review(models.Model):
+    """Review Model"""
 
     CHOICES = [(i, i) for i in range(11)]
     grade = models.IntegerField(choices=CHOICES)
@@ -40,20 +40,16 @@ class Review(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    
+
     resume = models.ForeignKey(Resume, on_delete=models.CASCADE)
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
     def __str__(self):
         return f'{self.author} review for {self.resume.filename} Resume'
 
-    
 
-    
-
-
-"""Tag Model (been added after the initial db design)"""
 class Tag(models.Model):
+    """Tag Model (been added after the initial db design)"""
     name = models.CharField(max_length=25)
 
     def __repr__(self):

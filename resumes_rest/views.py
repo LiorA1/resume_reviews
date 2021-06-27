@@ -6,6 +6,7 @@ from .serializers import ResumeSerializer, ResumeTextSerializer, ReviewSerialize
 # Create your views here.
 from .permissions import IsAuthorOrReadOnly
 
+
 class ResumeViewSet(viewsets.ModelViewSet):
     """
     A ModelViewSet for Resumes
@@ -16,9 +17,9 @@ class ResumeViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsAuthorOrReadOnly]
 
     def perform_create(self, serializer):
-        #super(ResumeViewSet, self).perform_create(serializer)
-        #print(f"self.request.user: {self.request.user}")
-        #serializer.author=self.request.user
+        # super(ResumeViewSet, self).perform_create(serializer)
+        # print(f"self.request.user: {self.request.user}")
+        # serializer.author=self.request.user
         serializer.save(author=self.request.user)
 
     # Partial Update action Enabled
@@ -26,8 +27,6 @@ class ResumeViewSet(viewsets.ModelViewSet):
         if self.action == 'update':
             return ResumeTextSerializer
         return ResumeSerializer
-
-
 
 
 class ReviewViewSet(viewsets.ModelViewSet):
