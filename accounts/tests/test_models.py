@@ -7,7 +7,6 @@ class CustomUserTestCase(TestCase):
 
     def setUp(self) -> None:
         self.user_a = CustomUser(username='la', email='la@test.com')
-        self.user_a.is_staff = True
         self.user_a.set_password('pass')
         self.user_a.save()
 
@@ -37,4 +36,24 @@ class CustomUserTestCase(TestCase):
 
 
 class ProfileTestCase(TestCase):
-    pass
+
+    def setUp(self) -> None:
+        self.user = CustomUser(username='la', email='la@test.com')
+        self.user.set_password('pass')
+        self.user.save()
+        return super().setUp()
+
+    def test_profile_exists(self):
+        self.assertEqual(Profile.objects.count(), 1)
+
+    def test_associated_user(self):
+        profile = Profile.objects.first()
+        self.assertEqual(profile, self.user.profile)
+
+    def test_profile_image_default(self):
+        profile_of_user = Profile.objects.get(user=self.user)
+        self.assertEqual(profile_of_user.image.name, "profile_pics/default.jpg")
+
+    def test_deletion_of_user(self):
+        self.user.delete()
+        self.assertEqual(Profile.objects.count(), 0)
