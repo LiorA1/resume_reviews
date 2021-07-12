@@ -26,7 +26,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
 
     path('accounts/', include('django.contrib.auth.urls')),
-    
+
     path('resumes/', include('resumes.urls')),
 
     path('resumes_rest/', include('resumes_rest.urls')),
@@ -42,31 +42,25 @@ urlpatterns = [
 
 #https://docs.djangoproject.com/en/3.1/howto/static-files/#serving-files-uploaded-by-a-user-during-development
 if settings.DEBUG:
-    
+
     print("Debug == True")
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
-    
 
     if settings.DEBUG_TOOLBAR_ENABLED:
         print("DEBUG_TOOLBAR_ENABLED == True")
         import debug_toolbar
         urlpatterns.insert(0, path('__debug__/', include(debug_toolbar.urls)))
 
-    
-    
+
     # Using in this way, it will be more understandable.
     # TODO: read about it more!
     # Only Add this when we in debug mode
 
-
-
-
-
     # TODO Highlighted as a TODO
-    #- This will also be highlighted as a TODO (Prefixed with a -)
+    # - This will also be highlighted as a TODO (Prefixed with a -)
     # This will be an unhighlighted comment
-    #! This is another comment
-    #- and again, continued highlighting
-    #* Deprecated
-    #? Question
+    # ! This is another comment
+    # - and again, continued highlighting
+    # * Deprecated
+    # ? Question

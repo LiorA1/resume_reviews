@@ -6,7 +6,7 @@
 	<h2> Login Form (inside accounts/templates/registration)</h2>
 	<div class="content-section">
 
-		<form method="POST" >
+		<form method="POST" id="loginForm">
 			{% csrf_token %}
 			<fieldset class="form-group">
 				<legend class="border-bottom mb-4">Log In</legend>
@@ -15,7 +15,7 @@
 			</fieldset>
 
 			<div class="form-group">
-				<button class="btn btn-outline-info" type="submit">Login</button>
+				<button class="btn btn-outline-info" type="submit" id="submit">Login</button>
 				<small class="text-muted ml-2">
 					<a href="{% url 'password_reset' %}">Forgot Password</a>
 				</small>

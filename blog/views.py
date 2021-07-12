@@ -25,18 +25,18 @@ class PostDetailView(owner.ParentOwnerDetailView):
     child_form = CommentForm
 
     # The ParentOwnerDetailView do all of this in an OOP manner:
-    #def get_context_data(self, **kwargs):
-    #    context = super(PostDetailView, self).get_context_data(**kwargs)
-    #    # Getting the specific Post Item
-    #    pk = self.kwargs['pk']
-    #    PostQuery = get_object_or_404(Post, id=pk)
-    #    # Get all the existing Comments for the post
-    #    comments = Comment.objects.filter(post=PostQuery).order_by('-updated_at')
-    #    comment_form = CommentForm()
-    #    print(f'typeof: {type(comment_form)}')
-    #    print(f'dict: {comment_form.instance.__dict__}')
-    #    context = {'post': PostQuery, 'comments': comments, 'comment_form': comment_form}
-    #    return context
+    # def get_context_data(self, **kwargs):
+    #     context = super(PostDetailView, self).get_context_data(**kwargs)
+    #     # Getting the specific Post Item
+    #     pk = self.kwargs['pk']
+    #     PostQuery = get_object_or_404(Post, id=pk)
+    #     # Get all the existing Comments for the post
+    #     comments = Comment.objects.filter(post=PostQuery).order_by('-updated_at')
+    #     comment_form = CommentForm()
+    #     print(f'typeof: {type(comment_form)}')
+    #     print(f'dict: {comment_form.instance.__dict__}')
+    #     context = {'post': PostQuery, 'comments': comments, 'comment_form': comment_form}
+    #     return context
 
 
 class PostCreateView(owner.OwnerCreateView):
@@ -58,7 +58,7 @@ class PostUpdateView(owner.OwnerUpdateView, UserPassesTestMixin):
 
     def get_success_url(self):
         # print("PostUpdateView:get_success_url")
-        # print("pk is:", self.kwargs.get('pk'))
+        # print(f'pk is: {self.kwargs.get("pk")}')
         return reverse('blog:post_detail', args=[self.kwargs.get('pk')])
 
 

@@ -12,9 +12,9 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 
 from pathlib import Path
 import os
+from django.contrib.messages import constants as messages
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-#BASE_DIR = Path(__file__).resolve().parent.parent
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 
@@ -33,7 +33,7 @@ ALLOWED_HOSTS = ["*"]
 # Application definition
 
 INSTALLED_APPS = [
-    
+
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -54,7 +54,7 @@ INSTALLED_APPS = [
     'crispy_forms', 
     'crispy_bootstrap5',
     'storages',
-    
+
 
     'django.contrib.admin',
 ]
@@ -104,8 +104,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 AUTH_USER_MODEL = 'accounts.CustomUser'
 
 
-
-
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
 
@@ -144,17 +142,19 @@ USE_TZ = True
 
 
 # In deployment -
-STATIC_ROOT = os.path.join(BASE_DIR, 'static') # where it will saves media on the file system.
-# In development -
-STATICFILES_DIRS = [
-    #os.path.join(BASE_DIR, "staticfiles"),
-]
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+# where it will saves media on the file system.
+
+# In development (moved to settings.dev)-
+# STATICFILES_DIRS = [
+#     # os.path.join(BASE_DIR, "staticfiles"),
+# ]
 
 STATIC_URL = '/static/'
 
 
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media') # Directory where uploaded media is saved.
-MEDIA_URL = '/media/' # Public URL at the browser
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  # Directory where uploaded media is saved.
+MEDIA_URL = '/media/'  # Public URL at the browser
 
 
 # AWS S3
@@ -166,18 +166,7 @@ AWS_DEFAULT_ACL = None
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
 
-#STATICFILES_STORAGE = 'storages.backends.s3boto3.S3StaticStorage'
-#AWS_QUERYSTRING_AUTH = False
-
-#S3_URL = f'{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com'
-#STATIC_DIRECTORY = 'static'
-#STATIC_URL = f'https://{S3_URL}/{STATIC_DIRECTORY}/'
-
-#MEDIA_DIRECTORY = 'media'
-#MEDIA_URL = f'https://{S3_URL}/{MEDIA_DIRECTORY}/'
-
-
-# 
+#
 CRISPY_TEMPLATE_PACK = 'bootstrap5'
 CRISPY_ALLOWED_TEMPLATE_PACKS = 'bootstrap5'
 CRISPY_FAIL_SILENTLY = not DEBUG
@@ -186,8 +175,6 @@ LOGIN_REDIRECT_URL = '/profile/'
 #LOGIN_URL = '/login/'
 
 
-from django.contrib.messages import constants as messages
 MESSAGE_TAGS = {
     messages.ERROR: 'danger',
 }
-

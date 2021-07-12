@@ -3,20 +3,17 @@ from .base import *
 DEGUB = True
 
 INSTALLED_APPS += [
-    #'el_pagination',
-    
+
+
 ]
-
-
 
 
 MIDDLEWARE += [
-    
+
 ]
 
 
-
-
+# In development -
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "staticfiles"),
 ]
@@ -47,6 +44,5 @@ if DEBUG_TOOLBAR_ENABLED:
     DEBUG_TOOLBAR_CONFIG = {
         'SHOW_TOOLBAR_CALLBACK': lambda request: False if request.is_ajax() else True,
     }
- 
-    # https://gist.github.com/douglasmiranda/9de51aaba14543851ca3#gistcomment-3765183
 
+    # https://gist.github.com/douglasmiranda/9de51aaba14543851ca3#gistcomment-3765183

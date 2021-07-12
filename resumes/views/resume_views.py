@@ -26,7 +26,6 @@ class ResumeListView(OwnerListView):
     """Display all the resumes"""
     model = Resume
     ordering = ['-created_at']
-    # paginate_by = 1
     # template_name = "resumes/<modelName>_list.html"
     queryset = Resume.objects.prefetch_related('tags', 'author', 'author__profile')
 
@@ -35,7 +34,6 @@ class UserResumeListView(ListView):
     """ListView of Resumes specific by the User"""
     model = Resume
     template_name = 'resumes/user_resumes.html'
-    # context_object_name = 'resumes'
 
     def get_queryset(self):
         # start_time = time.perf_counter()
@@ -92,17 +90,16 @@ class ResumeUpdateView(OwnerUpdateView):
     """ Resume Update Page/View """
     model = Resume
     fields = ['resume_file', 'text', 'tags']
-    # template_name = "resumes/<modelName>_form.html"
 
     def get_success_url(self):
-        # print("ResumeUpdateView:get_success_url", f'pk is: {self.kwargs.get("pk")}')
+        # print("ResumeUpdateView:get_success_url")
+        # print(f'pk is: {self.kwargs.get("pk")}')
         return reverse('resumes:resume_detail', args=[self.kwargs.get('pk')])
 
 
 class ResumeDeleteView(OwnerDeleteView):
     """ Resume Delete Page/View """
     model = Resume
-    # By convention:
     # template_name = "resumes/<modelName>_confirm_delete.html"
 
 
