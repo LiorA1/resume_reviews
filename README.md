@@ -1,6 +1,20 @@
-## resume_reviews
-A personal project of a resume reviews site
+# resume_reviews
+Resume reviews site with a Blog section.
 
+## Introduction -
+The project contains:
+1. Two main CRUD operations implemented by Django.
+2. One REST API implemented using DRF (see below).
+3. Four Apps, including accounts App that shadows Django accounts App.
+4. Multiple settings/views/models files/modules.
+5. Caching.
+6. N+1 Problems solutions.
+7. Tests for all the Apps. (Coverage shows 96% code coverage)
+
+The development of the project was using docker containers (docker-compose), and DJDT was integrated.
+AWS S3 was used for storage.
+
+## Further Deatails -
 ### Caching using memcached-
 Caching using memcached was used in two ways: per-view and low level.  
 Per View Caching in:
@@ -21,9 +35,10 @@ The Django Debug Toolbar was used, as seen in the settings.development and proje
 
 ### DRF -
 The Django-REST-Framework was used as a REST API for the resumes App, as one can see in the *resumes_rest* App.
+Custom Permission class as been applied for Object-level permission functionality.
 
 ### Accounts App
-Used to shadow and enlarge the django defualt accounts App.
+Used to shadow and enlarge the django default accounts App.
 CustomUser is shown in the Admin interface and have registration/login/password recovery system integrated.
 
 ### Testing
