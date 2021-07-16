@@ -35,7 +35,7 @@ INTERNAL_IPS = [
 
 
 # When testing 'DEBUG_TOOLBAR_ENABLED' should be 'False'. Otherwise: 'True'.
-DEBUG_TOOLBAR_ENABLED = False
+DEBUG_TOOLBAR_ENABLED = True
 if DEBUG_TOOLBAR_ENABLED:
     INSTALLED_APPS.append('debug_toolbar')
     MIDDLEWARE.insert(0, 'debug_toolbar.middleware.DebugToolbarMiddleware')

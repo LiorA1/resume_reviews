@@ -22,6 +22,7 @@ class ParentOwnerDetailView(OwnerDetailView):
     """
     Sub-class of OwnerDetailView, that designed for handling a model with
     child model in the context_data.
+    Parent view with its child model form, in the context.
     """
     child_model = None
     child_form = None
@@ -78,6 +79,7 @@ class ChildOwnerCreateView(OwnerCreateView):
     """
     Sub-class of OwnerCreateView, that abstract the logic of creating an
     object from the parent page/view.
+    Associate the child item with correct parent pk.
     """
 
     # new class attributes, for parent association.

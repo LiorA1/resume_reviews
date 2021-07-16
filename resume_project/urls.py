@@ -40,7 +40,7 @@ urlpatterns = [
 ]
 
 
-#https://docs.djangoproject.com/en/3.1/howto/static-files/#serving-files-uploaded-by-a-user-during-development
+# https://docs.djangoproject.com/en/3.1/howto/static-files/#serving-files-uploaded-by-a-user-during-development
 if settings.DEBUG:
 
     print("Debug == True")
