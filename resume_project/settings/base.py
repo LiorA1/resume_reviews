@@ -51,7 +51,7 @@ INSTALLED_APPS = [
 
 
     # third party apps -
-    'crispy_forms', 
+    'crispy_forms',
     'crispy_bootstrap5',
     'storages',
 
@@ -141,14 +141,14 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 
-# In deployment -
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+# In production -
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 # where it will saves media on the file system.
 
 # In development (moved to settings.dev)-
-# STATICFILES_DIRS = [
-#     # os.path.join(BASE_DIR, "staticfiles"),
-# ]
+STATICFILES_DIRS = [
+    # os.path.join(BASE_DIR, "static"),
+]
 
 STATIC_URL = '/static/'
 
@@ -172,7 +172,7 @@ CRISPY_ALLOWED_TEMPLATE_PACKS = 'bootstrap5'
 CRISPY_FAIL_SILENTLY = not DEBUG
 
 LOGIN_REDIRECT_URL = '/profile/'
-#LOGIN_URL = '/login/'
+# LOGIN_URL = '/login/'
 
 
 MESSAGE_TAGS = {

@@ -15,7 +15,7 @@ MIDDLEWARE += [
 
 # In development -
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "staticfiles"),
+    os.path.join(BASE_DIR, "static"),
 ]
 
 
