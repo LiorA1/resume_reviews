@@ -20,7 +20,7 @@ def register(request):
 
     else:
         form = CustomUserRegisterForm(request.POST)
-    
+
         if form.is_valid():
             form.save()
             username = form.cleaned_data.get('username')

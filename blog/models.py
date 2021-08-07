@@ -7,7 +7,15 @@ from django.conf import settings
 
 class PostQuerySet(models.QuerySet):
     def approve(self):
+        """Approve one Post instance. Notice: work on the QuerySet not on a model instance"""
         return self.update(status=Post.STATUS_APPROVED)
+
+    def bulk_approve(self):
+        """Approve bulk of Post instances."""
+        print(f'***{self}')
+        for obj in self:
+            obj.status = Post.STATUS_APPROVED
+        return self.bulk_update(self, ['status'])
 
 
 class Post(models.Model):
