@@ -5,6 +5,11 @@ from django.conf import settings
 # Create your models here.
 
 
+class PostQuerySet(models.QuerySet):
+    def approve(self):
+        return self.update(status=Post.STATUS_APPROVED)
+
+
 class Post(models.Model):
     title = models.CharField(max_length=100)
     content = models.TextField(default="")
@@ -13,6 +18,15 @@ class Post(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+
+    STATUS_DRAFT, STATUS_APPROVED = False, True
+    STATUS_CHOICES = (
+        (STATUS_DRAFT, 'Draft'),
+        (STATUS_APPROVED, 'Approved')
+    )
+    status = models.BooleanField(choices=STATUS_CHOICES, default=STATUS_DRAFT)
+
+    objects = PostQuerySet.as_manager()
 
     def __str__(self):
         return f'{self.title}'

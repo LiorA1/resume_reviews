@@ -16,11 +16,13 @@ class PostListView(owner.OwnerListView):
     """ Post List Page/View """
     model = Post
     ordering = ['-updated_at']
+    queryset = Post.objects.filter(status=Post.STATUS_APPROVED)
 
 
 class PostDetailView(owner.ParentOwnerDetailView):
     """ Post Detail Page/View """
     model = Post
+    queryset = Post.objects.filter(status=Post.STATUS_APPROVED)
     child_model = Comment
     child_form = CommentForm
 
@@ -48,6 +50,7 @@ class PostCreateView(owner.OwnerCreateView):
 class PostUpdateView(owner.OwnerUpdateView, UserPassesTestMixin):
     """ Post Update Page/View (with TestMixin)"""
     model = Post
+    queryset = Post.objects.filter(status=Post.STATUS_APPROVED)
     form_class = PostForm
 
     def test_func(self) -> bool:
