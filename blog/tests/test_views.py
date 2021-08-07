@@ -109,7 +109,12 @@ class PostViewTest(BlogViewsTest):
         url = reverse('blog:post_detail', args={1})
         self.assertEqual(response_of_post.url, url)
 
-        # # Check 200 Code after the redirect
+        # # Check 404 Code after the redirect (before approved)
+        response_of_redirect = self.client.get(response_of_post.url)
+        self.assertEqual(response_of_redirect.status_code, 404)
+
+        # # Check 200 Code after the redirect (after approved)
+        Post.objects.all().approve()
         response_of_redirect = self.client.get(response_of_post.url)
         self.assertEqual(response_of_redirect.status_code, 200)
 
@@ -165,7 +170,12 @@ class CommentViewTest(BlogViewsTest):
         url = reverse('blog:post_detail', args={post_id})
         self.assertEqual(response_of_create_comment.url, url)
 
-        # # Check 200 Code after the redirect
+        # # Check 404 Code after the redirect (before approved)
+        response_of_redirect = self.client.get(response_of_create_comment.url)
+        self.assertEqual(response_of_redirect.status_code, 404)
+
+        # # Check 200 Code after the redirect and aaproved.
+        Post.objects.all().bulk_approve()
         response_of_redirect = self.client.get(response_of_create_comment.url)
         self.assertEqual(response_of_redirect.status_code, 200)
 

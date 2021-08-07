@@ -38,8 +38,8 @@ class UITest(LiveServerTestCase):  # pragma: no cover
         cls.driver.quit()
         super().tearDownClass()
 
-    #@override_settings(DEBUG=True)
     # TODO: Why a cached view cant be tested ?
+    @override_settings(DEBUG=True)
     def test_resumes_page(self):
         resumes_list_path = reverse('resumes:resume_list')
         resumes_list_url = f'{self.live_server_url}{resumes_list_path}'
