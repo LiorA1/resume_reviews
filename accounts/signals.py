@@ -1,13 +1,12 @@
 
 from django.db.models.signals import post_save, post_delete
-from .models import CustomUser
+from .models import CustomUser, Profile
 from django.dispatch import receiver
-from .models import Profile
 
 
-@receiver(post_save, sender=CustomUser) 
+@receiver(post_save, sender=CustomUser, dispatch_uid='post_save_create_profile')
 def create_profile(sender, instance, created, **kwargs):
-    """ when a user is created - create an attched Profile"""
+    """Called when a CustomUser is created, and creates an attched Profile"""
     if created:
         Profile.objects.create(user=instance)
 
@@ -17,8 +16,9 @@ def create_profile(sender, instance, created, **kwargs):
 #     instance.profile.save()
 
 
-@receiver(post_delete, sender=Profile)
+@receiver(post_delete, sender=Profile, dispatch_uid='post_delete_clean_image')
 def post_delete_profile_clean_image(sender, instance, **kwargs):
+    """Called when a profile is deleted, for erase the image from AWS S3 storage."""
     cond = instance.image.name != instance.image.field.default
 
     if cond and instance.image:
