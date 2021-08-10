@@ -26,6 +26,7 @@ class ParentOwnerDetailView(OwnerDetailView):
     """
     child_model = None
     child_form = None
+    child_queryset = None
 
     def get_context_data(self, **kwargs):
         context = super(ParentOwnerDetailView, self).get_context_data(**kwargs)
@@ -35,8 +36,11 @@ class ParentOwnerDetailView(OwnerDetailView):
         ParentQuery = get_object_or_404(self.model, id=pk)
 
         # Get all the existing Childs of the Parent
-        qQuery = Q(**{f'{self.model._meta.verbose_name}': ParentQuery})
-        childs = self.child_model.objects.filter(qQuery).order_by("-updated_at")
+        if self.child_queryset is None:
+            qQuery = Q(**{f'{self.model._meta.verbose_name}': ParentQuery})
+            childs = self.child_model.objects.filter(qQuery).order_by("-updated_at")
+        else:
+            childs = self.child_queryset
 
         # define context names
         parent_model_name = f'{self.model.__name__.lower()}'

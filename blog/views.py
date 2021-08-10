@@ -7,6 +7,8 @@ from django.shortcuts import get_object_or_404, render
 # Create your views here.
 from resumes.views import owner
 
+from django.db.models import Q
+
 
 def blog_home(request):
     return render(request, 'blog/blog_home.html')
@@ -17,6 +19,16 @@ class PostListView(owner.OwnerListView):
     model = Post
     ordering = ['-updated_at']
     queryset = Post.objects.filter(status=Post.STATUS_APPROVED)
+
+    def get_queryset(self):
+        self.queryset = super(PostListView, self).get_queryset()
+
+        searchTerm = self.request.GET.get("search", False)
+        if searchTerm:
+            query_title_and_text = Q(title__icontains=searchTerm) | Q(content__icontains=searchTerm)
+            self.queryset = self.queryset.filter(query_title_and_text)
+
+        return self.queryset
 
 
 class PostDetailView(owner.ParentOwnerDetailView):

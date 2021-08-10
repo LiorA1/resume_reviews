@@ -1,7 +1,9 @@
 from selenium.webdriver.common.by import By
+from abc import ABC
 
 
 class BaseLocator(object):
+    """The Base Locator class"""
     pass
 
 

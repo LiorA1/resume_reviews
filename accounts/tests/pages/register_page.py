@@ -11,6 +11,7 @@ class RegisterPage(BasePage):
 
     def __init__(self, i_url: str, i_driver):
         super().__init__(i_url=i_url, i_driver=i_driver)
+        self._successful_redirect_url = reverse('login')
         # I define here the driver for the auto-complete.
         self.DRIVER_PATH = "C:\\chromedriver.exe"
         self.driver = webdriver.Chrome(self.DRIVER_PATH)
@@ -22,12 +23,13 @@ class RegisterPage(BasePage):
             If all the locators exists - True.
             Otherwise - False.
         """
-        return super().check_for_locators(RegisterPageLocators)
+        return super(RegisterPage, self).check_for_locators(RegisterPageLocators)
 
     def _click_signup_button(self):
         """Click the registration button"""
         button = self.driver.find_element(*RegisterPageLocators.button_submit)
 
+        # Because scroll requires to find the button
         try:
             ActionChains(self.driver).move_to_element(button).perform()
             wait_for = WebDriverWait(self.driver, 15)
@@ -55,6 +57,7 @@ class RegisterPage(BasePage):
                 *RegisterPageLocators.input_password1)
             pass2_ele = self.driver.find_element(
                 *RegisterPageLocators.input_password2)
+
             username_ele.send_keys(i_username)
             email_ele.send_keys(i_email)
             pass1_ele.send_keys(i_password)
@@ -77,7 +80,7 @@ class RegisterPage(BasePage):
         res = False
 
         try:
-            redirect_url = reverse('login')
+            redirect_url = self._successful_redirect_url
             wait_for = WebDriverWait(self.driver, 30)
             res = wait_for.until(EC.url_matches(redirect_url))
         except Exception as e:

@@ -247,7 +247,6 @@ class ProfileViewTest(AccountsViewsTests):
         self.assertTemplateUsed(response_of_post, template_name='accounts/profile.html')
 
         # # Check errors existness
-        # print("Testing:u_form errors:", response_of_post.context['u_form'].errors['email'])
         # print("Testing:p_form errors:", response_of_post.context['p_form'].errors)
         self.assertEqual(response_of_post.context['u_form'].errors['username'], ['This field is required.'])
         self.assertEqual(response_of_post.context['u_form'].errors['email'], ['This field is required.'])

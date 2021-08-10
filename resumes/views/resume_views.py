@@ -1,10 +1,12 @@
 from django.http.response import JsonResponse
 from django.shortcuts import render, get_object_or_404
 from django.urls.base import reverse
+from django.db.models import Q, Count
 # Create your views here.
+import re
+from django.db.models.functions import Lower
 
-
-from resumes.models import Resume, Review
+from resumes.models import Resume, Review, Tag
 from .owner import OwnerListView, OwnerCreateView, OwnerUpdateView, OwnerDeleteView, ParentOwnerDetailView
 from django.views.generic import ListView
 
@@ -29,6 +31,36 @@ class ResumeListView(OwnerListView):
     # template_name = "resumes/<modelName>_list.html"
     queryset = Resume.objects.prefetch_related('tags', 'author', 'author__profile')
 
+    def get_queryset(self):
+        self.queryset = super(ResumeListView, self).get_queryset()
+
+        # Check for searchTerm existence
+        searchTerm = self.request.GET.get("search", False)
+        if searchTerm:
+            # Find all existing tags
+            exists_tags = Tag.objects.annotate(lower_name=Lower('name'))
+
+            # Find all existing tags names (in lower case)
+            existing_tags_lower_name = exists_tags.values_list('lower_name', flat=True)
+
+            # Build a REGEX to help find the tags names that is in the search string
+            look_for = "|".join(f'\\b{p}\\b' for p in existing_tags_lower_name)
+
+            # find all expressions from the search string
+            required_tags_lower_name = re.findall(look_for, searchTerm.lower())
+
+            # Find the Tags instances themselves
+            tags_required = exists_tags.filter(lower_name__in=required_tags_lower_name).values_list('id', flat=True)
+
+            # By now, I have all the tags the user search for
+            # Lets look for the resumes associated with them
+
+            # Query which resumes have the wanted tags, order by the match score.
+            Q_query = Q(tags__in=tags_required)
+            self.queryset = self.queryset.filter(tags__isnull=False).distinct().annotate(score=Count('tags', filter=Q_query)).filter(score__gt=0).order_by('-score')
+
+        return self.queryset
+
 
 class UserResumeListView(ListView):
     """ListView of Resumes specific by the User"""
@@ -41,7 +73,7 @@ class UserResumeListView(ListView):
         # get the user instance (needed for lookup)
         user = get_object_or_404(CustomUser, username=self.kwargs.get('username'))
 
-        # get the resumes QuerySet of the user
+        # get the resumes QuerySet of the user, Using low level caching
         user_resumes_key = str(user.username + "_resumes")
         resumes_queryset = cache.get(user_resumes_key)
         if resumes_queryset is None:
@@ -63,19 +95,6 @@ class ResumeDetailView(ParentOwnerDetailView):
     model = Resume
     child_model = Review
     child_form = ReviewForm
-    # template_name = "resumes/<modelName>_detail.html"
-
-    # The ParentOwnerDetailView do all of this in an OOP manner:
-    # def get_context_data(self, **kwargs):
-    #     context = super(ResumeDetailView, self).get_context_data(**kwargs)
-    #     # Getting the Specific Resume
-    #     pk = self.kwargs['pk']
-    #     resumeQuery = get_object_or_404(Resume, id=pk)
-    #     # Get all the reviews belongs to the Resume
-    #     reviews = Review.objects.filter(resume=resumeQuery).order_by('-updated_at')
-    #     review_form = ReviewForm()
-    #     context = {'resume': resumeQuery, 'reviews': reviews, 'review_form': review_form}
-    #     return context
 
 
 class ResumeCreateView(OwnerCreateView):

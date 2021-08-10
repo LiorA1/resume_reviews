@@ -7,7 +7,7 @@ The project contains:
 2. One REST API implemented using DRF (see below).
 3. Four Apps, including accounts App that shadows Django accounts App.
 4. Multiple settings/views/models files/modules.
-5. Caching.
+5. [Caching.](/resume_project/settings/development.py#L24)
 6. N+1 Problems solutions.
 7. Tests for all the Apps. (Coverage shows 96% code coverage)
 
@@ -50,3 +50,9 @@ Docker was used as local development (docker-compose) environment.
 
 ### AWS
 AWS S3, was used for the users images and resumes files storage.
+
+
+## Additional Remarks -
+1. Only approved posts will be published (Using Custom QuerySet)
+2. DRF - Secondary serializer for '.update' operation. (/resumes_rest/views.py#L25)
+3. Search Bar for resumes and blogs, with score calculation, where its possible.

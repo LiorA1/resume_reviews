@@ -11,6 +11,7 @@ class LoginPage(BasePage):
 
     def __init__(self, i_url: str, i_driver):
         super().__init__(i_url=i_url, i_driver=i_driver)
+        self._successful_redirect_url = reverse('accounts:profile')
         # self.link_login = LinkLoginElement()
         # I define here the driver for the auto-complete.
         self.DRIVER_PATH = "C:\\chromedriver.exe"
@@ -23,7 +24,7 @@ class LoginPage(BasePage):
             If all the locators exists - True.
             Otherwise - False.
         """
-        return super().check_for_locators(LoginPageLocators)
+        return super(LoginPage, self).check_for_locators(LoginPageLocators)
 
     def _click_login_link(self):
         """Click the login button"""
@@ -40,12 +41,13 @@ class LoginPage(BasePage):
                 *LoginPageLocators.input_username)
             password_element = self.driver.find_element(
                 *LoginPageLocators.input_password)
+
             username_element.send_keys(i_username)
             password_element.send_keys(i_password)
             self._click_login_link()
             res = True
         except Exception as e:
-            print(f'is_redirected_correctly:Exception:{e}')
+            print(f'submit_login_form:Exception:{e}')
         finally:
             return res
 
@@ -59,7 +61,7 @@ class LoginPage(BasePage):
         res = False
 
         try:
-            redirect_url = reverse('accounts:profile')
+            redirect_url = self._successful_redirect_url
             wait_for = WebDriverWait(self.driver, 30)
             res = wait_for.until(EC.url_matches(redirect_url))
         except Exception as e:

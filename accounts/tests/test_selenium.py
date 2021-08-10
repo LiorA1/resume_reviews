@@ -16,7 +16,7 @@ from django.contrib.auth import get_user_model
 import unittest
 
 
-@unittest.skip("selenium")
+#@unittest.skip("selenium")
 class UITest(LiveServerTestCase):  # pragma: no cover
     #host = 'app'  # Docker
 
@@ -39,6 +39,7 @@ class UITest(LiveServerTestCase):  # pragma: no cover
         super().tearDownClass()
 
     # TODO: Why a cached view cant be tested ?
+    # ! Override the caches, before test with selenium
     @override_settings(DEBUG=True)
     def test_resumes_page(self):
         resumes_list_path = reverse('resumes:resume_list')
