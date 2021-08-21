@@ -5,7 +5,7 @@ from selenium import webdriver
 from .locators import LoginPageLocators
 
 
-class LoginPage(BasePage):
+class LoginPage(BasePage):  # pragma: no cover
     """Login Page Action methods class"""
     # https://github.com/paulbodean88/automation-design-patterns/blob/master/src/page_object_pattern/home_page.py
 

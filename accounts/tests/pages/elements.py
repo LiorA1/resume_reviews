@@ -3,7 +3,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 
 
-class ElementByName(object):
+class ElementByName(object):  # pragma: no cover
     """
     A Class that interact with element which found by name.
     Override This class with self.locator defined, which is the name of the wanted element.
@@ -36,7 +36,7 @@ class ElementByName(object):
         return element.get_attribute("value")
 
 
-class ElementByXPath(object):
+class ElementByXPath(object):  # pragma: no cover
     """
     A Class that interact with element which found by its XPATH.
     Override This class with self.locator defined, which is the XPATH of the wanted element.
@@ -69,7 +69,7 @@ class ElementByXPath(object):
         return element.get_attribute("value")
 
 
-class ElementByID(object):
+class ElementByID(object):  # pragma: no cover
     """
     A Class that interact with element which found by its ID.
     Override This class with self.locator defined, which is the ID of the wanted element.

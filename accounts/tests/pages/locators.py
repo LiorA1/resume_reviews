@@ -2,7 +2,7 @@ from selenium.webdriver.common.by import By
 from abc import ABC
 
 
-class BaseLocator(object):
+class BaseLocator(object):  # pragma: no cover
     """The Base Locator class"""
     pass
 

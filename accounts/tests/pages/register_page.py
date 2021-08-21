@@ -6,7 +6,7 @@ from selenium import webdriver
 from selenium.webdriver.common.action_chains import ActionChains
 
 
-class RegisterPage(BasePage):
+class RegisterPage(BasePage):  # pragma: no cover
     """Register Page Action methods class"""
 
     def __init__(self, i_url: str, i_driver):

@@ -9,7 +9,8 @@ The project contains:
 4. Multiple settings/views/models files/modules.
 5. [Caching.](/resume_project/settings/development.py#L24)
 6. N+1 Problems solutions.
-7. Tests for all the Apps. (Coverage shows 96% code coverage)
+7. Tests using TestCase (python.unittest)for all the Apps. (Coverage shows 96% code coverage)
+8. Selenium Tests for Accounts App, using Page Object Model & Locators Design.
 
 The development of the project was using docker containers (docker-compose), and DJDT was integrated.
 AWS S3 was used for storage.
@@ -45,6 +46,9 @@ CustomUser is shown in the Admin interface and have registration/login/password 
 Each App contains its own tests, using django.test.client and RequestFactory.
 There are tests with files uploading.
 
+### Selenium Testing
+Accounts App is tested using Selenium, using Page Object Model (POM) and Locators Design. Using Inheritance to develop code that is keeping the DRY principle.
+
 ### Docker
 Docker was used as local development (docker-compose) environment.
 
@@ -56,3 +60,4 @@ AWS S3, was used for the users images and resumes files storage.
 1. Only approved posts will be published (Using Custom QuerySet)
 2. DRF - Secondary serializer for '.update' operation. (/resumes_rest/views.py#L25)
 3. Search Bar for resumes and blogs, with score calculation, where its possible.
+4. Custom QuerySets & Managers in the resumes App, which abstract the logic and caches the heavy queries.

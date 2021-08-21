@@ -4,7 +4,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from accounts.tests.pages.locators import BaseLocator
 
 
-class BasePage(object):
+class BasePage(object):  # pragma: no cover
     """A Base Page Action methods class."""
 
     def __init__(self, i_url: str = None, i_driver=None):
