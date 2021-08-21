@@ -12,7 +12,6 @@ class PostQuerySet(models.QuerySet):
 
     def bulk_approve(self):
         """Approve bulk of Post instances."""
-        print(f'***{self}')
         for obj in self:
             obj.status = Post.STATUS_APPROVED
         return self.bulk_update(self, ['status'])

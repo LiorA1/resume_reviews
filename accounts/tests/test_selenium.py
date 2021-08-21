@@ -16,7 +16,7 @@ from django.contrib.auth import get_user_model
 import unittest
 
 
-#@unittest.skip("selenium")
+@unittest.skip("selenium")
 class UITest(LiveServerTestCase):  # pragma: no cover
     #host = 'app'  # Docker
 

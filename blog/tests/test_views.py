@@ -1,3 +1,4 @@
+from django.db.models.query_utils import Q
 from blog.models import Comment, Post
 from blog.views import CommentCreateView, PostCreateView
 from django.test import TestCase, RequestFactory
@@ -62,7 +63,8 @@ class BlogViewsTest(TestCase):
 
 class PostViewTest(BlogViewsTest):
 
-    def test_post_listview(self):
+    def test_post_listview_reachable(self):
+        '''Test post listview can be reached'''
         url = reverse('blog:post_list')
         response_of_get = self.client.get(url)
         self.assertEqual(response_of_get.status_code, 200)
@@ -74,27 +76,58 @@ class PostViewTest(BlogViewsTest):
     #     self.assertEqual(response_of_get.status_code, 200)
 
     def test_post_create_delete(self):
-        # # login
+        '''Test post create and delete processes'''
         response_of_login = self.client.login(**self.data_of_user)
 
-        # # Create a Post
         response_of_post = self.create_post("title for post test", "content for a test post", self.user)
 
-        # # Check status Code is 302 (Redirect)
         self.assertEqual(response_of_post.status_code, 302)
-
-        # # Check that a Resume been created
         self.assertEqual(Post.objects.count(), 1)
 
-        # # Check deletation of resume (review need to be deleted as well)
+        # # Check deletion of resume (review need to be deleted as well)
         url_delete = reverse('blog:post_delete', args={1})
         response_of_delete = self.client.post(url_delete, follow=True)
 
         self.assertEqual(Post.objects.count(), 0)
         self.assertEqual(response_of_delete.status_code, 200)
 
+    def _check_search_finctionality(self, search_term_given: str):
+        '''Checks that the search function, works as expected.'''
+        url = reverse('blog:post_list')
+        data = {"search": search_term_given}
+        response_of_get = self.client.get(url, data=data)
+        self.assertEqual(response_of_get.status_code, 200)
+
+        query_title_and_text = Q(title__icontains=search_term_given) | Q(content__icontains=search_term_given) 
+        post_ids_from_db = Post.objects.filter(query_title_and_text).values_list('pk', flat=True)
+
+        Post.objects.all().bulk_approve()
+        response_of_get = self.client.get(url, data=data)
+
+        id_set = set()
+        for post in response_of_get.context['post_list']:
+            id_set.add(post.pk)
+
+        self.assertTrue(id_set == set(post_ids_from_db))
+
+    def test_post_listview_search_option(self):
+        '''Test if the post listview search function, works as expected.'''
+        response_of_login = self.client.login(**self.data_of_user)
+
+        response_of_post = self.create_post("title for post test", "content for a test post", self.user)
+
+        self.assertEqual(Post.objects.count(), 1)
+
+        self._check_search_finctionality("post test")
+
+        self._check_search_finctionality("for a")
+
+        #
+        # python manage.py test blog.tests.test_views.PostViewTest
+        #
+
     def test_post_detailview(self):
-        # login
+        ''' Test the DetailView after Post creation'''
         response_of_login = self.client.login(**self.data_of_user)
 
         # # Create a Post

@@ -21,14 +21,16 @@ class PostListView(owner.OwnerListView):
     queryset = Post.objects.filter(status=Post.STATUS_APPROVED)
 
     def get_queryset(self):
-        self.queryset = super(PostListView, self).get_queryset()
+        base_queryset = super(PostListView, self).get_queryset()
 
         searchTerm = self.request.GET.get("search", False)
         if searchTerm:
             query_title_and_text = Q(title__icontains=searchTerm) | Q(content__icontains=searchTerm)
-            self.queryset = self.queryset.filter(query_title_and_text)
+            res_queryset = base_queryset.filter(query_title_and_text)
+        else:
+            res_queryset = base_queryset
 
-        return self.queryset
+        return res_queryset
 
 
 class PostDetailView(owner.ParentOwnerDetailView):
