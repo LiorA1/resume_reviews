@@ -1,3 +1,5 @@
+import time
+from typing import List
 from django.core.handlers.wsgi import WSGIRequest
 from django.http.response import HttpResponseBase
 from resumes.views.review_views import ReviewCreateView
@@ -8,7 +10,7 @@ from django.urls import reverse
 from django.contrib.auth import get_user_model
 
 from ..views import ResumeCreateView, ResumeCreateView, ResumeDetailView
-from ..models import Resume, Review
+from ..models import Resume, Review, Tag
 
 from unittest import mock
 from django.core.files import File
@@ -25,7 +27,7 @@ import os.path
 
 
 class ResumesViewsTest(TestCase):
-
+    '''A Base Class for all View-Test classes, in resume App'''
     @classmethod
     def setUpTestData(cls) -> None:
 
@@ -46,7 +48,7 @@ class ResumesViewsTest(TestCase):
 
         return super().setUp()
 
-    def create_resume(self, text: str, file_path: str, author) -> HttpResponseBase:
+    def create_resume(self, text: str, file_path: str, author, tags_id: List = None) -> HttpResponseBase:
         '''Create a Resume'''
 
         from django.core.files.uploadedfile import SimpleUploadedFile
@@ -55,8 +57,10 @@ class ResumesViewsTest(TestCase):
 
         resume_data = {
             "text": text,
-            "author": author,
+            "author": author
         }
+        if tags_id:
+            resume_data["tags"] = tags_id
 
         # create a request
         with open(file_path, 'rb') as fhandler:
@@ -73,6 +77,12 @@ class ResumesViewsTest(TestCase):
         response_of_post = ResumeCreateView.as_view()(request)
 
         return response_of_post
+
+    def _delete_resume_db(self, resume_id: int):
+        url_delete_resume = reverse('resumes:resume_delete', args={resume_id})
+        response_of_delete = self.client.post(url_delete_resume, follow=True)
+        self.assertEqual(response_of_delete.status_code, 200)
+        return response_of_delete
 
     def create_review(self, grade: int, text: str, resume_id: int) -> HttpResponseBase:
         '''Create a Review'''
@@ -91,8 +101,13 @@ class ResumesViewsTest(TestCase):
 
         return res
 
+    def _create_tag_db(self, name: str) -> Tag:
+        res = Tag.objects.create(name=name)
+        return res
+
 
 class ResumeViews(ResumesViewsTest):
+    '''A Test class for all resume_views in resume App'''
 
     # def test_home_view(self):
     #     url = reverse('resumes:home')
@@ -100,20 +115,103 @@ class ResumeViews(ResumesViewsTest):
     #     self.assertEqual(response_of_get.status_code, 200)
     #     self.assertTemplateUsed(response_of_get, template_name='resumes/home.html')
 
-    def test_resume_listview(self):
+    def test_resume_listview_reachable(self):
+        '''Test resume listview can be reached'''
         url = reverse('resumes:resume_list')
         response_of_get = self.client.get(url)
         # print(response_of_get.content)
         self.assertEqual(response_of_get.status_code, 200)
 
-    def test_user_resume_listview(self):
+    def _check_search_function(self, search_term_given: str, tags_pk: List):
+        '''
+        Checks if the searchTerm search process yield the same results as expected:\n
+        If the string is empty - base case: No AssertionError will be raised.\n
+        If the string is not empty - search process need to yield same resumes id's as a db search following the given tags_pk List.\n
+        Otherwise - AssertionError will be raised.
+        '''
+
+        url = reverse('resumes:resume_list')
+        data = {"search": search_term_given}
+        response_of_get = self.client.get(url, data=data)
+        self.assertEqual(response_of_get.status_code, 200)
+
+        if len(search_term_given) > 0:
+            esa_is = []
+            # Check that each resume associated with the tags from data
+            for resume in response_of_get.context['resume_list']:
+                esa_is.append(resume.id)
+
+            resumes_id = Tag.objects.filter(pk__in=tags_pk).values_list('resume__id', flat=True)
+
+            self.assertTrue(set(resumes_id) == set(esa_is))
+        else:
+            resumes_in_db_count = Resume.objects.count()
+            resumes_in_response = len(response_of_get.context['resume_list'])
+            self.assertTrue(resumes_in_db_count == resumes_in_response)
+
+    def test_resume_listview_search_function(self):
+        '''Test if the search bar (string) function as excpected.'''
+        # login
+        response_of_login = self.client.login(**self.data_of_user)
+
+        # # Create a file
+        FILE_NAME = 'resume_sample.pdf'
+        pdf_file_path = os.path.join(self.TEST_DATA_DIR, FILE_NAME)
+
+        # # Creates 3 Tags
+        java_tag = self._create_tag_db("Java")
+        python_tag = self._create_tag_db("Python")
+        c_tag = self._create_tag_db("C")
+
+        # # Create 3 Resumes
+        tags = [java_tag.pk, python_tag.pk]
+        response_of_post = self.create_resume("text for resume test", pdf_file_path, self.user, tags)
+        self.assertEqual(Resume.objects.count(), 1)
+        tags = [java_tag.pk, python_tag.pk, c_tag.pk]
+        response_of_post = self.create_resume("text for resume test", pdf_file_path, self.user, tags)
+        self.assertEqual(Resume.objects.count(), 2)
+        tags = [java_tag.pk, c_tag.pk]
+        response_of_post = self.create_resume("text for resume test", pdf_file_path, self.user, tags)
+        self.assertEqual(Resume.objects.count(), 3)
+
+        # check a string that not contains any tag name - Return empty list of resumes.
+        empty_id_list = []
+        self._check_search_function("PyThOny", empty_id_list)
+
+        # check a string that contains one tag name - Return only relevant resumes.
+        python_id_list = [python_tag.pk]
+        self._check_search_function("PyThOn", python_id_list)
+
+        # check a string that contains two tag names - Return only relevant resumes.
+        python_java_id_list = [python_tag.pk, java_tag.pk]
+        self._check_search_function("PyThOn jaVa", python_java_id_list)
+
+        # check empty string - Return all Resumes.
+        all_id_list = []
+        self._check_search_function("", all_id_list)
+
+        # # Check deletion of resume (review need to be deleted as well)
+        self.assertEqual(Resume.objects.count(), 3)
+        response_of_delete = self._delete_resume_db(1)
+        self.assertEqual(Resume.objects.count(), 2)
+
+        response_of_delete = self._delete_resume_db(2)
+        self.assertEqual(Resume.objects.count(), 1)
+
+        response_of_delete = self._delete_resume_db(3)
+        self.assertEqual(Resume.objects.count(), 0)
+
+        # docker exec -it django_container_slim_resume_viewer sh
+        # python manage.py test resumes.tests.test_views.ResumeViews.test_resume_listview_search_function
+
+    def test_user_resume_listview_reachable(self):
+        '''Test if the user resume listview is reachable'''
         url = reverse('resumes:user_resumes', args={self.user.username})
-        # print("the url:", url)
         response_of_get = self.client.get(url)
         self.assertEqual(response_of_get.status_code, 200)
 
     def test_resume_create_delete(self):
-        # # login
+        '''Test resume create and delete processes'''
         response_of_login = self.client.login(**self.data_of_user)
 
         # # Create a file
@@ -129,7 +227,7 @@ class ResumeViews(ResumesViewsTest):
         # # Check that a Resume been created
         self.assertEqual(Resume.objects.count(), 1)
 
-        # # Check deletation of resume (review need to be deleted as well)
+        # # Check deletion of resume (review need to be deleted as well)
         resume_id = 1
         url_delete = reverse('resumes:resume_delete', args={resume_id})
         response_of_delete = self.client.post(url_delete, follow=True)
@@ -138,7 +236,7 @@ class ResumeViews(ResumesViewsTest):
         self.assertEqual(response_of_delete.status_code, 200)
 
     def test_resume_detailview(self):
-        # login
+        ''' Test the DetailView after resume creation'''
         response_of_login = self.client.login(**self.data_of_user)
 
         # Create a file
@@ -181,9 +279,10 @@ class ResumeViews(ResumesViewsTest):
 
 
 class ReviewViews(ResumesViewsTest):
+    '''A Test class for all review_views in resume App'''
 
     def test_review_create_delete(self):
-        """Test the creation and deletion of a review"""
+        '''Test the creation and deletion of a review'''
         # login
         response_of_login = self.client.login(**self.data_of_user)
 

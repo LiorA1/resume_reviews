@@ -19,6 +19,7 @@ def resume_post_save_handler(sender, **kwargs):
 
 @receiver(post_delete, sender=Resume)
 def resume_post_delete_handler(sender, instance, **kwargs):
+    '''deletes the resume file from AWS S3'''
     if instance.resume_file:
         instance.resume_file.delete(save=False)
 

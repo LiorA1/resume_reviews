@@ -3,8 +3,6 @@ from django.shortcuts import render, get_object_or_404
 from django.urls.base import reverse
 from django.db.models import Q, Count
 # Create your views here.
-import re
-from django.db.models.functions import Lower
 
 from resumes.models import Resume, Review, Tag
 from .owner import OwnerListView, OwnerCreateView, OwnerUpdateView, OwnerDeleteView, ParentOwnerDetailView
@@ -16,7 +14,6 @@ from accounts.models import CustomUser
 
 
 import time
-from django.core.cache import cache
 
 
 def home(request):
@@ -32,34 +29,32 @@ class ResumeListView(OwnerListView):
     queryset = Resume.objects.prefetch_related('tags', 'author', 'author__profile')
 
     def get_queryset(self):
-        self.queryset = super(ResumeListView, self).get_queryset()
+        base_queryset = super(ResumeListView, self).get_queryset()
 
         # Check for searchTerm existence
         searchTerm = self.request.GET.get("search", False)
+
         if searchTerm:
-            # Find all existing tags
-            exists_tags = Tag.objects.annotate(lower_name=Lower('name'))
+            tags_required = Tag.objects.tags_id_from_str(searchTerm)
 
-            # Find all existing tags names (in lower case)
-            existing_tags_lower_name = exists_tags.values_list('lower_name', flat=True)
-
-            # Build a REGEX to help find the tags names that is in the search string
-            look_for = "|".join(f'\\b{p}\\b' for p in existing_tags_lower_name)
-
-            # find all expressions from the search string
-            required_tags_lower_name = re.findall(look_for, searchTerm.lower())
-
-            # Find the Tags instances themselves
-            tags_required = exists_tags.filter(lower_name__in=required_tags_lower_name).values_list('id', flat=True)
-
-            # By now, I have all the tags the user search for
-            # Lets look for the resumes associated with them
+            # ordering attributes kept
+            ordering = self.get_ordering()
+            if not ordering:
+                ordering = []
+            else:
+                ordering = self.ordering[:]
+            ordering.insert(0, '-score')
 
             # Query which resumes have the wanted tags, order by the match score.
-            Q_query = Q(tags__in=tags_required)
-            self.queryset = self.queryset.filter(tags__isnull=False).distinct().annotate(score=Count('tags', filter=Q_query)).filter(score__gt=0).order_by('-score')
+            q_Query = Q(tags__in=tags_required)
+            # res_queryset = base_queryset.filter(tags__isnull=False).distinct().annotate(score=Count('tags', filter=q_Query)).filter(score__gt=0).order_by(*ordering)
 
-        return self.queryset
+            res_queryset = base_queryset.filter(tags__isnull=False).distinct().annotate(score=Count('tags')).filter(q_Query, score__gt=0).order_by(*ordering)
+
+        else:
+            res_queryset = base_queryset
+
+        return res_queryset
 
 
 class UserResumeListView(ListView):
@@ -73,14 +68,9 @@ class UserResumeListView(ListView):
         # get the user instance (needed for lookup)
         user = get_object_or_404(CustomUser, username=self.kwargs.get('username'))
 
-        # get the resumes QuerySet of the user, Using low level caching
-        user_resumes_key = str(user.username + "_resumes")
-        resumes_queryset = cache.get(user_resumes_key)
-        if resumes_queryset is None:
-            # print("***insert to cache***")
-            resumes_queryset = Resume.objects.filter(author=user).order_by('-id').prefetch_related('tags', 'author', 'author__profile')
-            cache.set(user_resumes_key, resumes_queryset, timeout=300)
-            # TODO: Caching is not appear in the djdt for some reason
+        ordering = ['id']
+        prefetched_fields = ['tags', 'author', 'author__profile']
+        resumes_queryset = Resume.objects.filter_by_user_orderby_fetch(user, order_fields=ordering, fetch_fields=prefetched_fields)
 
         # finish_time = time.perf_counter()
         # print("UserResumeListView:get_queryset - After")
@@ -123,9 +113,28 @@ class ResumeDeleteView(OwnerDeleteView):
 
 
 
-
-
-
+#SELECT DISTINCT "resumes_resume"."id", "resumes_resume"."resume_file", "resumes_resume"."text", "resumes_resume"."created_at", "resumes_resume"."updated_at", "resumes_resume"."author_id", 
+#    COUNT(CASE 
+#            WHEN "resumes_resume_tags"."tag_id" IN (SELECT U0."id" FROM "resumes_tag" U0 WHERE LOWER(U0."name") IN (python)) THEN "resumes_resume_tags"."tag_id" 
+#            ELSE NULL END) AS "score" 
+#FROM "resumes_resume" LEFT OUTER JOIN "resumes_resume_tags" ON ("resumes_resume"."id" = "resumes_resume_tags"."resume_id") 
+#WHERE "resumes_resume_tags"."tag_id" IS NOT NULL 
+#GROUP BY "resumes_resume"."id", "resumes_resume"."resume_file", "resumes_resume"."text", "resumes_resume"."created_at", "resumes_resume"."updated_at", "resumes_resume"."author_id" 
+#HAVING COUNT(CASE 
+#                WHEN ("resumes_resume_tags"."tag_id" IN (SELECT U0."id" FROM "resumes_tag" U0 WHERE LOWER(U0."name") IN (python))) THEN "resumes_resume_tags"."tag_id" 
+#                ELSE NULL END) > 0 
+#ORDER BY "score" DESC, "resumes_resume"."created_at" DESC
+#
+#
+#
+#
+#SELECT DISTINCT "resumes_resume"."id", "resumes_resume"."resume_file", "resumes_resume"."text", "resumes_resume"."created_at", "resumes_resume"."updated_at", "resumes_resume"."author_id", 
+#    COUNT("resumes_resume_tags"."tag_id") AS "score" 
+#FROM "resumes_resume" INNER JOIN "resumes_resume_tags" ON ("resumes_resume"."id" = "resumes_resume_tags"."resume_id") INNER JOIN "resumes_resume_tags" T4 ON ("resumes_resume"."id" = T4."resume_id") 
+#WHERE ("resumes_resume_tags"."tag_id" IS NOT NULL AND T4."tag_id" IN (SELECT U0."id" FROM "resumes_tag" U0 WHERE LOWER(U0."name") IN (python))) 
+#GROUP BY "resumes_resume"."id", "resumes_resume"."resume_file", "resumes_resume"."text", "resumes_resume"."created_at", "resumes_resume"."updated_at", "resumes_resume"."author_id" 
+#HAVING COUNT("resumes_resume_tags"."tag_id") > 0 
+#ORDER BY "score" DESC, "resumes_resume"."created_at" DESC
 
 
 
