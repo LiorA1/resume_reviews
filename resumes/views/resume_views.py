@@ -113,28 +113,6 @@ class ResumeDeleteView(OwnerDeleteView):
 
 
 
-#SELECT DISTINCT "resumes_resume"."id", "resumes_resume"."resume_file", "resumes_resume"."text", "resumes_resume"."created_at", "resumes_resume"."updated_at", "resumes_resume"."author_id", 
-#    COUNT(CASE 
-#            WHEN "resumes_resume_tags"."tag_id" IN (SELECT U0."id" FROM "resumes_tag" U0 WHERE LOWER(U0."name") IN (python)) THEN "resumes_resume_tags"."tag_id" 
-#            ELSE NULL END) AS "score" 
-#FROM "resumes_resume" LEFT OUTER JOIN "resumes_resume_tags" ON ("resumes_resume"."id" = "resumes_resume_tags"."resume_id") 
-#WHERE "resumes_resume_tags"."tag_id" IS NOT NULL 
-#GROUP BY "resumes_resume"."id", "resumes_resume"."resume_file", "resumes_resume"."text", "resumes_resume"."created_at", "resumes_resume"."updated_at", "resumes_resume"."author_id" 
-#HAVING COUNT(CASE 
-#                WHEN ("resumes_resume_tags"."tag_id" IN (SELECT U0."id" FROM "resumes_tag" U0 WHERE LOWER(U0."name") IN (python))) THEN "resumes_resume_tags"."tag_id" 
-#                ELSE NULL END) > 0 
-#ORDER BY "score" DESC, "resumes_resume"."created_at" DESC
-#
-#
-#
-#
-#SELECT DISTINCT "resumes_resume"."id", "resumes_resume"."resume_file", "resumes_resume"."text", "resumes_resume"."created_at", "resumes_resume"."updated_at", "resumes_resume"."author_id", 
-#    COUNT("resumes_resume_tags"."tag_id") AS "score" 
-#FROM "resumes_resume" INNER JOIN "resumes_resume_tags" ON ("resumes_resume"."id" = "resumes_resume_tags"."resume_id") INNER JOIN "resumes_resume_tags" T4 ON ("resumes_resume"."id" = T4."resume_id") 
-#WHERE ("resumes_resume_tags"."tag_id" IS NOT NULL AND T4."tag_id" IN (SELECT U0."id" FROM "resumes_tag" U0 WHERE LOWER(U0."name") IN (python))) 
-#GROUP BY "resumes_resume"."id", "resumes_resume"."resume_file", "resumes_resume"."text", "resumes_resume"."created_at", "resumes_resume"."updated_at", "resumes_resume"."author_id" 
-#HAVING COUNT("resumes_resume_tags"."tag_id") > 0 
-#ORDER BY "score" DESC, "resumes_resume"."created_at" DESC
 
 
 
