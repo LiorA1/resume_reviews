@@ -23,6 +23,7 @@ from . import views
 from django.views.decorators.cache import cache_page
 
 app_name = "resumes"
+# cache_page(60*15)(view)
 
 urlpatterns = [
 
@@ -30,7 +31,7 @@ urlpatterns = [
 
     # Resumes CRUD
     # path('list/', (views.ResumeListView.as_view()), name="resume_list"),
-    path('list/', cache_page(60*15)(views.ResumeListView.as_view()), name="resume_list"),
+    path('list/', views.ResumeListView.as_view(), name="resume_list"),
     path('user/<str:username>/', views.UserResumeListView.as_view(), name="user_resumes"),
     path('resume/create/', views.ResumeCreateView.as_view(success_url=reverse_lazy(f'{app_name}:resume_list')), name="resume_create"),
     path('resume/<int:pk>/', views.ResumeDetailView.as_view(), name="resume_detail"),

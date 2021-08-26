@@ -36,6 +36,20 @@ class ResumeQuerySet(models.QuerySet):
         Q_query = Q(tags__in=tags_id)
         return self.annotate(score=Count('tags', filter=Q_query))
 
+    def fetch_store_resume_list(self):
+        '''
+        Used for Fetch and Store the query of all the resumes with the related fields.
+        Used primarily by the 'ResumeListView' View.
+        '''
+        resumes_cache_key = "resumes"
+        resumes_queryset = cache.get(resumes_cache_key)
+        if resumes_queryset is None:
+            resumes_queryset = self
+            cache.set(resumes_cache_key, resumes_queryset, timeout=300)
+
+        return resumes_queryset
+
+
     def filter_by_user_orderby_fetch(self, io_customUser: CustomUser, order_fields: List, fetch_fields: List):
         '''
         Filter Resumes by given "CustomUser", order by "order_fields" and fetching the "fetch_fields"

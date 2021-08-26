@@ -52,7 +52,7 @@ class ResumeListView(OwnerListView):
             res_queryset = base_queryset.filter(tags__isnull=False).distinct().annotate(score=Count('tags')).filter(q_Query, score__gt=0).order_by(*ordering)
 
         else:
-            res_queryset = base_queryset
+            res_queryset = base_queryset.fetch_store_resume_list()
 
         return res_queryset
 
@@ -71,6 +71,8 @@ class UserResumeListView(ListView):
         ordering = ['id']
         prefetched_fields = ['tags', 'author', 'author__profile']
         resumes_queryset = Resume.objects.filter_by_user_orderby_fetch(user, order_fields=ordering, fetch_fields=prefetched_fields)
+
+        # TODO: Use filter from python to filter the user
 
         # finish_time = time.perf_counter()
         # print("UserResumeListView:get_queryset - After")
