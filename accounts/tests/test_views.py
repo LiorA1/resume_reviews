@@ -279,6 +279,63 @@ class ProfileViewTest(AccountsViewsTests):
         # CustomUser.objects.get(username=self.user.username).delete()
         # ! No image was supplied
 
+    def test_profile_view_invalid_image_1(self):
+        """Test the profile view with valid data"""
+        # login
+        response_of_login = self.client.login(**self.data_of_user)
+        self.assertTrue(response_of_login)
+
+        # correct u_data
+        u_form_data = {
+            "username": self.data_of_user['username'],
+            "email": self.data_of_user["email"]
+        }
+
+        # # Create a request
+        # invalid image(too big)
+        FILE_NAME = 'big.jpeg'
+        image_file_path = os.path.join(self.TEST_DATA_DIR, FILE_NAME)
+
+        # # Build a request
+        request_profile = self.build_update_profile_request(
+            u_form_data['username'],
+            u_form_data['email'],
+            image_file_path, FILE_NAME)
+
+        # proccess the request with middleware
+        request_profile = self.proccess_request_middleware(request_profile)
+
+        # Make a request directly to the profile fbv
+        response_of_post = profile(request_profile)
+
+        # python manage.py test accounts.tests.test_views.ProfileViewTest
+        #print(response_of_post)
+        #print(response_of_post.__dict__)
+        #print(response_of_post.content)
+
+        # Checks 200
+        self.assertEqual(response_of_post.status_code, 200)
+
+        self.assertIn(b"Please use an image that is 300 x 300 pixels or less", response_of_post.content)
+
+        # Go to some directory
+        resumes_home_url = reverse('resumes:home')
+        response_of_get = self.client.get(resumes_home_url)
+        self.assertEqual(response_of_get.status_code, 200)
+
+        # Log Out
+        self.client.logout()
+
+        response_of_get = self.client.get(resumes_home_url)
+        self.assertEqual(response_of_get.status_code, 200)
+        client_user = auth.get_user(self.client)
+        self.assertNotEqual(client_user, self.user)
+        self.assertFalse(client_user.is_authenticated)
+
+        # ! AWS Cleanup (no need - the image was invalid)
+        #  print(CustomUser.objects.count())
+        # CustomUser.objects.get(username=self.user.username).delete()
+
     def test_profile_view_valid(self):
         """Test the profile view with valid data"""
         # login

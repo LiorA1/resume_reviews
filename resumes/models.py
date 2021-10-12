@@ -63,6 +63,7 @@ class ResumeQuerySet(models.QuerySet):
             resumes_queryset = self.filter(author=io_customUser).order_by(*order_fields).prefetch_related(*fetch_fields)
             cache.set(user_resumes_key, resumes_queryset, timeout=300)
 
+        # resumes_queryset = self.filter(author=io_customUser).order_by(*order_fields).prefetch_related(*fetch_fields)
         return resumes_queryset
 
 
@@ -130,6 +131,8 @@ class TagQuerySet(models.QuerySet):
             # Find all existing tags names (in lower case)
             existing_tags_lower_name = exists_tags.values_list('lower_name', flat=True)
             cache.set(e_t_l_n_key, existing_tags_lower_name, timeout=60*60*24)
+
+        # existing_tags_lower_name = exists_tags.values_list('lower_name', flat=True)
 
         # Build a REGEX to help find the tags names that is in the search string
         look_for = "|".join(f'\\b{p}\\b' for p in existing_tags_lower_name)

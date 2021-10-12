@@ -1,8 +1,8 @@
 {% extends "base.html" %}
 
 {% block content %}
-    {% if resume_list %}
-        <div class="cardgroup">
+    <div class="cardgroup">
+        {% if resume_list %}
             {% for resume in resume_list %}
             <!-- TODO: Consider to use AJAX to request the resume html from another view. -->
                 <div class="card m-2 overflow-hidden">
@@ -79,14 +79,18 @@
                 <button id='next_button' onclick="loadNext({{resume.id}})">Fetch</button>
                 {% endcomment %}
             {% endfor %}
+            
+        {% else %}
+            <div class="card m-2 overflow-hidden">
+                <strong>No Resumes was found</strong>
+            </div>
+        {% endif %}
 
-        </div>
+    </div>
 
         <br>
 
-    {% else %}
-        <strong>No Resumes was found</strong>
-    {% endif %}
+    
     
 
     

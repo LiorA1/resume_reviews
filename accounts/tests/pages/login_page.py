@@ -1,8 +1,9 @@
-from .base_page import BasePage, WebDriverWait, EC
+
 from .elements import ElementByName
 from django.urls.base import reverse
 from selenium import webdriver
 from .locators import LoginPageLocators
+from POM.base_page import BasePage, WebDriverWait, EC
 
 
 class LoginPage(BasePage):  # pragma: no cover
@@ -14,8 +15,8 @@ class LoginPage(BasePage):  # pragma: no cover
         self._successful_redirect_url = reverse('accounts:profile')
         # self.link_login = LinkLoginElement()
         # I define here the driver for the auto-complete.
-        self.DRIVER_PATH = "C:\\chromedriver.exe"
-        self.driver = webdriver.Chrome(self.DRIVER_PATH)
+        #self.DRIVER_PATH = "C:\\chromedriver.exe"
+        #self.driver = webdriver.Chrome(self.DRIVER_PATH)
 
     def check_for_locators(self):
         """

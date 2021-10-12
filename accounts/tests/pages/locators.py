@@ -1,10 +1,5 @@
 from selenium.webdriver.common.by import By
-from abc import ABC
-
-
-class BaseLocator(object):  # pragma: no cover
-    """The Base Locator class"""
-    pass
+from POM.base_locator import BaseLocator
 
 
 class ResumeListPageLocators(BaseLocator):

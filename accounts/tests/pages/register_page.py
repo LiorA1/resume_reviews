@@ -1,7 +1,7 @@
 from time import sleep
 from django.urls.base import reverse
 from accounts.tests.pages.locators import RegisterPageLocators
-from .base_page import BasePage, WebDriverWait, EC
+from POM.base_page import BasePage, WebDriverWait, EC
 from selenium import webdriver
 from selenium.webdriver.common.action_chains import ActionChains
 
@@ -13,8 +13,8 @@ class RegisterPage(BasePage):  # pragma: no cover
         super().__init__(i_url=i_url, i_driver=i_driver)
         self._successful_redirect_url = reverse('login')
         # I define here the driver for the auto-complete.
-        self.DRIVER_PATH = "C:\\chromedriver.exe"
-        self.driver = webdriver.Chrome(self.DRIVER_PATH)
+        #self.DRIVER_PATH = "C:\\chromedriver.exe"
+        #self.driver = webdriver.Chrome(self.DRIVER_PATH)
 
     def check_for_locators(self):
         """

@@ -14,17 +14,31 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from django.contrib.auth import get_user_model
 import unittest
+import os
 
 
-@unittest.skip("selenium")
-class UITest(LiveServerTestCase):  # pragma: no cover
-    #host = 'app'  # Docker
+CACHES_SELENIUM = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
+    }
+}
+
+
+class UITest(LiveServerTestCase):
 
     @classmethod
     def setUpClass(cls) -> None:
         super().setUpClass()
-        cls.DRIVER_PATH = "C:\\chromedriver.exe"
-        cls.driver = webdriver.Chrome(cls.DRIVER_PATH)
+
+        DOCKER_ENV = os.environ.get('DOCKER_ENV', '') == 'True'
+
+        if DOCKER_ENV:
+            # DOCKER
+            pass
+        else:
+            cls.DRIVER_PATH = "C:\\chromedriver.exe"
+            cls.driver = webdriver.Chrome(cls.DRIVER_PATH)
+
         # Docker
         #cls.driver = webdriver.Remote(
         #    command_executor="http://selenium:4444/wd/hub",
@@ -35,12 +49,32 @@ class UITest(LiveServerTestCase):  # pragma: no cover
 
     @classmethod
     def tearDownClass(cls) -> None:
-        cls.driver.quit()
+        cls.driver.close()
         super().tearDownClass()
 
-    # TODO: Why a cached view cant be tested ?
-    # ! Override the caches, before test with selenium
-    @override_settings(DEBUG=True)
+    def set_user_data(self, i_username: str = "test_ui", i_email: str = "test@test.com", i_pass: str = "tkdalf543x"):
+        self.data_of_user = {
+            'username': i_username,
+            'password': i_pass,
+            'email': i_email,
+        }
+
+    def create_user_instance(self, i_username: str = "test_ui", i_pass: str = "tkdalf543x", i_email: str = "test@test.com"):
+        self.data_of_user = {
+            'username': i_username,
+            'password': i_pass,
+            'email': i_email,
+        }
+        self.user = get_user_model().objects.create_user(**self.data_of_user)
+
+
+
+
+@unittest.skipIf(os.environ.get('DOCKER_ENV', '') == 'True', "selenium")
+class ResumeListUITest(UITest):  # pragma: no cover
+
+    # !Override the caches, before test with selenium
+    @override_settings(DEBUG=True, CACHES=CACHES_SELENIUM)
     def test_resumes_page(self):
         resumes_list_path = reverse('resumes:resume_list')
         resumes_list_url = f'{self.live_server_url}{resumes_list_path}'
@@ -51,16 +85,47 @@ class UITest(LiveServerTestCase):  # pragma: no cover
             res = wait_for.until(EC.title_is("Django Site"))
         except Exception as e:
             print(f'UITest:Exception:{e}')
-            self.driver.quit()
+            # self.driver.close()
 
         self.assertEqual("Django Site", self.driver.title)
 
-    def initialize_user_data(self, i_username: str = "test_ui", i_email: str = "test@test.com", i_pass: str = "tkdalf543x"):
-        self.data_of_user = {
-            'username': i_username,
-            'password': i_pass,
-            'email': i_email,
-        }
+
+@unittest.skipIf(os.environ.get('DOCKER_ENV', '') == 'True', "selenium")
+class LoginUITest(UITest):   # pragma: no cover
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        super().setUpClass()
+
+        cls.login_path = reverse('login')
+        cls.login_url = f'{cls.live_server_url}{cls.login_path}'
+
+        cls._LoginPage = LoginPage(cls.login_url, cls.driver)
+
+    def test_login_page(self):
+        self.create_user_instance()
+
+        login_page = self._LoginPage
+        login_page.load_page()
+        res_locators = login_page.check_for_locators()
+        self.assertTrue(res_locators)
+
+        self.assertTrue(login_page.is_url_login(self.login_url))
+
+        res_title = login_page.is_title_matches("Django Site")
+        self.assertTrue(res_title)
+
+        res_login = login_page.submit_login_form(self.data_of_user['username'], self.data_of_user['password'])
+        self.assertTrue(res_login)
+
+        res_redirect = login_page.is_redirected_correctly()
+        self.assertTrue(res_redirect)
+
+        # python manage.py test accounts.tests.test_selenium
+
+
+@unittest.skipIf(os.environ.get('DOCKER_ENV', '') == 'True', "selenium")
+class RegisterUITest(UITest):   # pragma: no cover
 
     def test_register_page(self):
         register_path = reverse('accounts:register')
@@ -74,7 +139,7 @@ class UITest(LiveServerTestCase):  # pragma: no cover
         res_title = register_page.is_title_matches("Django Site")
         self.assertTrue(res_title)
 
-        self.initialize_user_data()
+        self.set_user_data()
 
         res_register = register_page.submit_register_form(
             self.data_of_user['username'],
@@ -84,38 +149,6 @@ class UITest(LiveServerTestCase):  # pragma: no cover
 
         res_redirect = register_page.is_redirected_correctly()
         self.assertTrue(res_redirect)
-
-    def create_user_instance(self, i_username: str = "test_ui", i_pass: str = "tkdalf543x", i_email: str = "test@test.com"):
-        self.data_of_user = {
-            'username': i_username,
-            'password': i_pass,
-            'email': i_email,
-        }
-        self.user = get_user_model().objects.create_user(**self.data_of_user)
-
-    def test_login_page(self):
-        self.create_user_instance()
-
-        login_path = reverse('login')
-        login_url = f'{self.live_server_url}{login_path}'
-
-        login_page = LoginPage(login_url, self.driver)
-        login_page.load_page()
-        res_locators = login_page.check_for_locators()
-        self.assertTrue(res_locators)
-
-        self.assertTrue(login_page.is_url_login(login_url))
-
-        res_title = login_page.is_title_matches("Django Site")
-        self.assertTrue(res_title)
-
-        res_login = login_page.submit_login_form(self.data_of_user['username'], self.data_of_user['password'])
-        self.assertTrue(res_login)
-
-        res_redirect = login_page.is_redirected_correctly()
-        self.assertTrue(res_redirect)
-
-
 
 
 # python manage.py test accounts.tests.test_selenium
