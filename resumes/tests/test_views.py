@@ -38,18 +38,29 @@ class ResumesViewsTest(TestCase):
         return super().setUpTestData()
 
     def setUp(self) -> None:
+        self.client = Client()
+
         self.data_of_user = {
             'username': 'test',
             'password': 'dsfdsf4543543hgjh',
             'email': 'test@test.com',
         }
-        self.client = Client()
         self.user = get_user_model().objects.create_user(**self.data_of_user)
+
+        self.data_of_user_b = {
+            'username': 'test2',
+            'password': '274fkvj7sAG4G',
+            'email': 'test2@test.com',
+        }
+        self.user_b = get_user_model().objects.create_user(**self.data_of_user_b)
 
         return super().setUp()
 
     def create_resume(self, text: str, file_path: str, author, tags_id: List = None) -> HttpResponseBase:
-        '''Create a Resume'''
+        """
+        Creates a Resume, using SimpleUploadedFile and RequestFactory.
+        Returns the POST response.
+        """
 
         from django.core.files.uploadedfile import SimpleUploadedFile
 
@@ -210,32 +221,36 @@ class ResumeViews(ResumesViewsTest):
         response_of_get = self.client.get(url)
         self.assertEqual(response_of_get.status_code, 200)
 
-    def test_resume_create_delete(self):
+    def test_resume_create_delete_loggedin(self):
         '''Test resume create and delete processes'''
         response_of_login = self.client.login(**self.data_of_user)
 
-        # # Create a file
+        # Create a file path
         FILE_NAME = 'resume_sample.pdf'
         pdf_file_path = os.path.join(self.TEST_DATA_DIR, FILE_NAME)
 
-        # # Create a Resume
+        # Create a Resume
         response_of_post = self.create_resume("text for resume test", pdf_file_path, self.user)
 
-        # # Check status Code is 302 (Redirect)
+        # Check status Code is 302 (Redirect) - creation success
         self.assertEqual(response_of_post.status_code, 302)
 
-        # # Check that a Resume been created
+        # Check that a Resume been created
         self.assertEqual(Resume.objects.count(), 1)
 
-        # # Check deletion of resume (review need to be deleted as well)
+        # Check deletion of resume (review need to be deleted as well)
         resume_id = 1
         url_delete = reverse('resumes:resume_delete', args={resume_id})
-        response_of_delete = self.client.post(url_delete, follow=True)
 
+        # Check confirmation template is used
+        response_of_delete = self.client.get(url_delete)
+        self.assertTemplateUsed(response_of_delete, 'resumes/resume_confirm_delete.html')
+
+        response_of_delete = self.client.post(url_delete, follow=True)
         self.assertEqual(Resume.objects.count(), 0)
         self.assertEqual(response_of_delete.status_code, 200)
 
-    def test_resume_detailview(self):
+    def test_resume_detailview_loggedin(self):
         ''' Test the DetailView after resume creation'''
         response_of_login = self.client.login(**self.data_of_user)
 
@@ -244,11 +259,10 @@ class ResumeViews(ResumesViewsTest):
 
         # # create resume
         response_of_post = self.create_resume("text for sample resume test", pdf_file_path, self.user)
-
         self.assertEqual(Resume.objects.count(), 1)  # # Check that a Resume been created
         self.assertEqual(response_of_post.status_code, 302)  # # Check status Code is 302 (Redirect)
 
-        # # Check detailView path was created
+        # # Check detailView path was created, and is redirected at
         resume_id = 1
         url = reverse('resumes:resume_detail', args={resume_id})
         self.assertEqual(response_of_post.url, url)
@@ -265,17 +279,161 @@ class ResumeViews(ResumesViewsTest):
         self.assertIsNotNone(response_of_redirect.context['reviews'])
         self.assertIsNotNone(response_of_redirect.context['review_form'])
 
-        # # Check deletion of resume
+        # deletion of resume
         url_delete = reverse('resumes:resume_delete', args={resume_id})
-        response_of_delete = self.client.get(url_delete)
-
-        # # Check template
-        self.assertTemplateUsed(response_of_delete, 'resumes/resume_confirm_delete.html')
-
-        # # Check deletion of resume
         response_of_delete = self.client.post(url_delete)
         # print(f'response_of_delete: {response_of_delete}')
         self.assertEqual(Resume.objects.count(), 0)
+
+    def test_resume_update_reachable(self):
+        ''' Test the UpdateView after resume creation'''
+        response_of_login = self.client.login(**self.data_of_user)
+
+        # Create Resume
+        pdf_file_path = os.path.join(self.TEST_DATA_DIR, 'resume_sample.pdf')
+        response_of_post = self.create_resume("text for sample resume test", pdf_file_path, self.user)
+        self.assertEqual(response_of_post.status_code, 302)  # # Check status Code is 302 (Redirect)
+        self.assertEqual(Resume.objects.count(), 1)  # # Check that a Resume been created
+
+        # # Check updateView path was created
+        resume_id = 1
+        url = reverse('resumes:resume_update', args={resume_id})
+
+        # GET UpdateView path
+        response_of_redirect = self.client.get(url)
+        self.assertEqual(response_of_redirect.status_code, 200)
+
+        # delete
+        url_delete = reverse('resumes:resume_delete', args={resume_id})
+        response_of_delete = self.client.post(url_delete)
+        # print(f'response_of_delete: {response_of_delete}')
+        self.assertEqual(Resume.objects.count(), 0)
+
+        # python manage.py test resumes.tests.test_views.ResumeViews
+
+    #
+    def test_resume_update_post(self):
+        """
+        Test the UpdateView for the author.
+        """
+
+        response_of_login = self.client.login(**self.data_of_user)
+
+        # Create Resume
+        pdf_file_path = os.path.join(self.TEST_DATA_DIR, 'resume_sample.pdf')
+        response_of_post = self.create_resume("text for sample resume test", pdf_file_path, self.user)
+        self.assertEqual(response_of_post.status_code, 302)  # # Check status Code is 302 (Redirect)
+        self.assertEqual(Resume.objects.count(), 1)  # # Check that a Resume been created
+
+        # # Check updateView path was created
+        resume_id = 1
+        url = reverse('resumes:resume_update', args={resume_id})
+
+        resume_data = {
+            "text": "text updated",
+        }
+
+        # POST UpdateView path
+        response_of_post = self.client.post(url, resume_data)
+        self.assertEqual(response_of_post.status_code, 302)
+
+        # follow the rediredct
+        # # Check 200 Code after the redirect
+        response_of_redirect = self.client.get(response_of_post.url)
+        self.assertEqual(response_of_redirect.status_code, 200)
+
+        # Check "text updated" apperance
+        self.assertEqual(response_of_redirect.context_data['resume'].text, resume_data['text'])
+
+        # delete
+        url_delete = reverse('resumes:resume_delete', args={resume_id})
+        response_of_delete = self.client.post(url_delete)
+        # print(f'response_of_delete: {response_of_delete}')
+        self.assertEqual(Resume.objects.count(), 0)
+
+        # python manage.py test resumes.tests.test_views.ResumeViews.test_resume_update_post
+
+    def test_resume_userb_update_usera_resume(self):
+        """
+        Test the UpdateView for a different loggedin user.
+        """
+
+        response_of_login = self.client.login(**self.data_of_user)
+
+        # Create Resume
+        pdf_file_path = os.path.join(self.TEST_DATA_DIR, 'resume_sample.pdf')
+        response_of_post = self.create_resume("text for sample resume test", pdf_file_path, self.user)
+        self.assertEqual(response_of_post.status_code, 302)  # # Check status Code is 302 (Redirect)
+        self.assertEqual(Resume.objects.count(), 1)  # # Check that a Resume been created
+
+        # Check updateView
+        self.client.logout()
+        response_of_login = self.client.login(**self.data_of_user_b)
+        resume_id = 1
+        url = reverse('resumes:resume_update', args={resume_id})
+
+        resume_data = {
+            "text": "text updated",
+        }
+
+        # POST UpdateView path
+        response_of_post = self.client.post(url, resume_data)
+        self.assertEqual(response_of_post.status_code, 404)
+
+        # delete
+        self.client.logout()
+        response_of_login = self.client.login(**self.data_of_user)
+        url_delete = reverse('resumes:resume_delete', args={resume_id})
+        response_of_delete = self.client.post(url_delete)
+        # print(f'response_of_delete: {response_of_delete}')
+        self.assertEqual(Resume.objects.count(), 0)
+
+        # python manage.py test resumes.tests.test_views.ResumeViews.test_resume_userb_update_usera_resume
+
+    #
+    def test_resume_userb_to_delete_usera_resume(self):
+        """
+        Test the DeleteView for a different loggedin user.
+        """
+
+        response_of_login = self.client.login(**self.data_of_user)
+
+        # Create a file path
+        FILE_NAME = 'resume_sample.pdf'
+        pdf_file_path = os.path.join(self.TEST_DATA_DIR, FILE_NAME)
+
+        # Create a Resume
+        response_of_post = self.create_resume("text for resume test", pdf_file_path, self.user)
+
+        # Check status Code is 302 (Redirect) - creation success
+        self.assertEqual(response_of_post.status_code, 302)
+
+        # Check that a Resume been created
+        self.assertEqual(Resume.objects.count(), 1)
+
+        # Attempt of user_b to delete resume of user
+        self.client.logout()
+        response_of_login = self.client.login(**self.data_of_user_b)
+        resume_id = 1
+        url_delete = reverse('resumes:resume_delete', args={resume_id})
+
+        # Check confirmation template is used
+        response_of_delete = self.client.get(url_delete)
+        #self.assertTemplateUsed(response_of_delete, 'resumes/resume_confirm_delete.html')
+
+        response_of_delete = self.client.post(url_delete, follow=True)
+        self.assertEqual(response_of_delete.status_code, 404)
+        self.assertEqual(Resume.objects.count(), 1)
+
+        self.client.logout()
+        response_of_login = self.client.login(**self.data_of_user)
+
+        # deletion of resume
+        response_of_delete = self.client.post(url_delete)
+        # print(f'response_of_delete: {response_of_delete}')
+        self.assertEqual(Resume.objects.count(), 0)
+
+        # python manage.py test resumes.tests.test_views.ResumeViews
 
 
 class ReviewViews(ResumesViewsTest):

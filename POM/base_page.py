@@ -23,7 +23,7 @@ class BasePage(object):  # pragma: no cover
         """
         return i_str == self.driver.title
 
-    def check_for_locators(self, locator_class: BaseLocator):
+    def check_for_locators(self, locator_class: BaseLocator, timeout: int = 15):
         """
         Checks the existness of all locators from the given locator in the child page call.
         BaseLocator - the parent of all Locators classes.
@@ -32,7 +32,6 @@ class BasePage(object):  # pragma: no cover
         """
         total_locators = 0
         found_locators = 0
-        timeout = 15
         threshold = 0.5
 
         for (key, val) in locator_class.__dict__.items():
@@ -42,7 +41,7 @@ class BasePage(object):  # pragma: no cover
                     wait_for = WebDriverWait(self.driver, timeout)
                     wait_for.until(EC.presence_of_element_located(val))
                 except Exception as e:
-                    print(f'check_for_locators: {e}.\nKey: {key}')
+                    print(f'check_for_locators:Key raised Exception: {key}.\nException: {e}.\n')
                 else:
                     found_locators += 1
                 finally:
@@ -51,17 +50,6 @@ class BasePage(object):  # pragma: no cover
         print(f'check_for_locators {locator_class.__name__}, percentage: {found_locators / total_locators}')
         return found_locators / total_locators
 
-        # res = False
-        # try:
-        #     for (key, val) in locator_class.__dict__.items():
-        #         if not key.startswith('_'):
-        #             wait_for = WebDriverWait(self.driver, 15)
-        #             wait_for.until(EC.presence_of_element_located(val))
-        #     res = True
-        # except Exception as e:
-        #     print(f'check_for_locators: {e}.\nKey: {key}')
-        # finally:
-        #     return res
-
+    #
     def is_current_url(self, url):
         return self.driver.current_url == url

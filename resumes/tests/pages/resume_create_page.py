@@ -12,5 +12,11 @@ class CreateResumePage(BasePage):  # pragma: no cover
         #self.DRIVER_PATH = "C:\\chromedriver.exe"
         #self.driver = webdriver.Chrome(self.DRIVER_PATH)
 
-    def check_for_locators(self):
+    def check_for_locators_logged(self):
         return super(CreateResumePage, self).check_for_locators(ResumeCreatePageLocators)
+
+    def check_for_locators_logout(self):
+        return super(CreateResumePage, self).check_for_locators(ResumeCreatePageLocators)
+    
+    def submit_resume_form(self):
+        pass

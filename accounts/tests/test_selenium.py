@@ -24,7 +24,7 @@ CACHES_SELENIUM = {
 }
 
 
-class UITest(LiveServerTestCase):
+class UITest(LiveServerTestCase):  # pragma: no cover
 
     @classmethod
     def setUpClass(cls) -> None:

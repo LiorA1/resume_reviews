@@ -1,5 +1,5 @@
 
-from .locators import ResumeListPageLocators
+from .locators import ResumeListPageLocators, ResumeListPageLoggedLocators, ResumeListPageLogoutLocators
 from selenium import webdriver
 from POM.base_page import BasePage, WebDriverWait, EC
 
@@ -13,8 +13,11 @@ class ListPage(BasePage):  # pragma: no cover
         #self.DRIVER_PATH = "C:\\chromedriver.exe"
         #self.driver = webdriver.Chrome(self.DRIVER_PATH)
 
-    def check_for_locators(self):
-        return super(ListPage, self).check_for_locators(ResumeListPageLocators)
+    def check_for_locators_logged(self):
+        return super(ListPage, self).check_for_locators(ResumeListPageLoggedLocators)
+
+    def check_for_locators_logout(self):
+        return super(ListPage, self).check_for_locators(ResumeListPageLogoutLocators)
 
     def is_empty(self):
         """
