@@ -17,12 +17,16 @@ AWS S3 was used for storage.
 
 ## Further Deatails -
 ### Caching using memcached-
-Caching using memcached was used in two ways: per-view and low level.  
+Caching using memcached was used in two ways: per-view and low level.
+All Caching is defined in two types of modules:
+per view is done in the urls module, for better maintainability and readability.
+low level caching is concentrated in the models modules, which interacts directly with the Database and allows flexability between the DB and the caching framework, in a visiable and coherent manner.
+
 Per View Caching in:
-1. resumes.views.ResumeListView (in the urls module)  
+1. [resumes.urls](/resumes/urls.py#L30) - Caching static views. ("home" view)
 
 Low Level was used in:  
-1. resumes.views.resume_views.UserResumeListView
+1. [resumes.models](/resumes/models.py#L39)
 
 
 ### N+1 Problem solved in:
@@ -45,6 +49,7 @@ CustomUser is shown in the Admin interface and have registration/login/password 
 ### Testing
 Each App contains its own tests, using django.test.client and RequestFactory.
 There are tests with files uploading.
+Coverage shows a 96% coverage of the project.
 
 ### Selenium Testing
 Accounts App is tested using Selenium, using Page Object Model (POM) and Locators Design. Using Inheritance to develop code that is keeping the DRY principle.
