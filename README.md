@@ -9,30 +9,32 @@ The project contains:
 4. Multiple settings/views/models files/modules.
 5. [Caching.](/resume_project/settings/development.py#L24)
 6. N+1 Problems solutions.
-7. Tests using TestCase (python.unittest)for all the Apps. (Coverage shows 96% code coverage)
+7. Tests using TestCase (python.unittest) for all the Apps. (Coverage shows 96% code coverage)
 8. Selenium Tests for Accounts App, using Page Object Model & Locators Design.
 
-The development of the project was using docker containers (docker-compose), and DJDT was integrated.
+The development of the project was in docker containers (docker-compose), and DJDT was integrated.
 AWS S3 was used for storage.
 
 ## Further Deatails -
 ### Caching using memcached-
 Caching using memcached was used in two ways: per-view and low level.
 All Caching is defined in two types of modules:
-per view is done in the urls module, for better maintainability and readability.
-low level caching is concentrated in the models modules, which interacts directly with the Database and allows flexability between the DB and the caching framework, in a visiable and coherent manner.
+*per view* is done in the urls module, for better maintainability and readability.
+*low level* caching is concentrated in the models modules, which interacts directly with the Database and allows flexability between the DB and the caching framework, in a visiable and coherent manner.
 
 Per View Caching in:
 1. [resumes.urls](/resumes/urls.py#L30) - Caching static views. ("home" view)
 
 Low Level was used in:  
-1. [resumes.models](/resumes/models.py#L39)
+1. [resumes.models](/resumes/models.py#L39) - Caching low level items.
 
 
 ### N+1 Problem solved in:
-1. resumes.views.resume_views.UserResumeListView (used prefetch_related)
-2. resumes.views.resume_views.ResumeListView (used prefetch_related)
+1. UserResumeListView - Using prefetch_related, but the logic is in the models view, for enabling caching.
+2. ResumeListView - Using prefetch_related, but the logic is in the models view, for enabling caching.
 
+
+The logic is in the models module, because of design decision.
 
 ### DJDT -
 The Django Debug Toolbar was used, as seen in the settings.development and project.urls modules.
