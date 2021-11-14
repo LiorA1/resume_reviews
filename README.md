@@ -18,9 +18,9 @@ AWS S3 was used for storage.
 ## Further Deatails -
 ### Caching using memcached-
 Caching using memcached was used in two ways: per-view and low level.
-All Caching is defined in two types of modules:
-*per view* is done in the urls module, for better maintainability and readability.
-*low level* caching is concentrated in the models modules, which interacts directly with the Database and allows flexability between the DB and the caching framework, in a visiable and coherent manner.
+All Caching is defined in two types of modules:  
+*per view* is done in the urls module, for better maintainability and readability.  
+*low level* caching is concentrated in the models modules, which interacts directly with the Database and allows flexability between the DB and the caching framework, in a visiable and coherent manner.  
 
 Per View Caching in:
 1. [resumes.urls](/resumes/urls.py#L30) - Caching static views. ("home" view)
