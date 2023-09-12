@@ -6,7 +6,7 @@ from django.dispatch import receiver
 
 @receiver(post_save, sender=CustomUser, dispatch_uid='post_save_create_profile')
 def create_profile(sender, instance, created, **kwargs):
-    """Called when a CustomUser is created, and creates an attched Profile"""
+    """Called when a CustomUser is created, and creates an attached Profile"""
     if created:
         Profile.objects.create(user=instance)
 
